@@ -1,0 +1,137 @@
+/* Custom styles for the humanitarian aid template */
+/* Bootstrap green + links */
+:root {
+  --bs-primary: #198754;
+  --bs-success: #198754;
+  --bs-link-color: #198754;
+  --bs-link-hover-color: #146c43;
+
+  /* Extras para UI do formulário */
+  --ink-900:#0f172a; --ink-700:#334155; --ink-500:#64748b;
+  --bg-soft:#f6fbf8; --card:#ffffff; --border:#e6f0ea;
+  --green-700:#157347; --green-600:#198754; --green-500:#20c997;
+}
+
+/* ---------- HERO (Home) ---------- */
+.hero {
+  /* Se quiseres o degradé por trás da foto, mantém a primeira linha; senão remove */
+  /* background-image: linear-gradient(to bottom right, #e8f5e9, #c8e6c9); */
+  min-height: 70vh;
+  background: url('/images/banner-ajuda.png') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  position: relative;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.hero::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: rgba(0, 0, 0, 0.5); /* overlay escuro para contraste */
+}
+
+.hero .container { position: relative; z-index: 1; }
+
+/* ---------- SUB HERO (Quem Somos, etc.) ---------- */
+.sub-hero {
+  min-height: 30vh;
+  background: url('/images/banner-ajuda.png') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.sub-hero::before {
+  content: ""; position: absolute; inset: 0;
+  background: rgba(0,0,0,0.5);
+}
+.sub-hero .container { position: relative; z-index: 1; }
+
+/* ---------- FOOTER ---------- */
+footer { font-size: 0.9rem; }
+
+/* ---------- FORM DONATIVO: VISUAL REFRESH ---------- */
+
+/* Fundo suave só na página do formulário */
+body.donation-bg{
+  background: radial-gradient(1200px 600px at 10% -10%, #e9f7f0, transparent) no-repeat, var(--bg-soft);
+}
+
+/* Cartão do formulário */
+.form-shell{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  box-shadow: 0 10px 28px rgba(16,24,40,.08);
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+/* Títulos de secção do formulário */
+.section-title{
+  display:flex; align-items:center; gap:.6rem;
+  font-weight:700; color:var(--green-700);
+  margin:1.5rem 0 .75rem;
+}
+.section-title::before{
+  content:""; width:10px; height:10px; border-radius:999px; background:var(--green-600);
+  box-shadow:0 0 0 6px rgba(25,135,84,.12);
+}
+
+/* “Chips” para os montantes */
+.amount-group{ display:flex; flex-wrap:wrap; gap:.5rem .75rem; }
+.amount-chip{
+  position:relative; display:inline-flex; align-items:center; justify-content:center;
+  padding:.6rem 1rem; border:1.5px solid var(--border); border-radius:999px;
+  background:#fff; color:var(--ink-700); font-weight:600; cursor:pointer; transition:.15s;
+}
+.amount-chip:hover{ border-color:var(--green-500); transform:translateY(-1px); }
+.amount-chip input{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+.amount-chip.active{
+  background:var(--green-600); color:#fff; border-color:var(--green-600);
+  box-shadow:0 6px 16px rgba(25,135,84,.25);
+}
+
+/* Campo “Outro valor” mais compacto quando visível */
+#otherAmountGroup.compact{ display:flex; align-items:center; gap:.6rem; }
+#otherAmount{ max-width:180px; }
+
+/* Switch Empresa + condicionais suaves */
+.form-switch .form-check-input{ width:3rem; height:1.5rem; }
+#companyNameGroup, #nipcGroup, #nifGroup{ transition: .2s; }
+
+/* Inputs confortáveis e foco consistente */
+.form-control, .form-select{
+  border-radius:.75rem; border:1px solid var(--border);
+}
+.form-control:focus, .form-select:focus{
+  border-color:var(--green-600) !important;
+  box-shadow:0 0 0 .25rem rgba(25,135,84,.15) !important;
+}
+
+/* Sidebar informativa opcional */
+.info-card{
+  background:linear-gradient(180deg, #e9f7f0, #ffffff);
+  border:1px solid var(--border);
+  border-radius:1.25rem;
+  padding:1.25rem;
+}
+.info-card h5{ color:var(--green-700); }
+.info-card li+li{ margin-top:.4rem; }
+
+/* Botão principal mais forte */
+.btn-success{
+  background:var(--green-600) !important; border-color:var(--green-600) !important;
+  border-radius:.75rem; font-weight:700; padding:.75rem 1.25rem;
+}
+.btn-success:hover{ background:var(--green-700) !important; border-color:var(--green-700) !important; }
+
+/* Substitui o span por um background do teu ícone */
+.brand-icon{
+  width: 28px; height: 28px; display: inline-block;
+  background: url('/images/logo.png') center/contain no-repeat;
+  filter: brightness(0) invert(1);  /* fica branco sobre o verde */
+}
