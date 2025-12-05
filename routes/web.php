@@ -53,6 +53,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('payments/destroy', 'PaymentController@massDestroy')->name('payments.massDestroy');
     Route::resource('payments', 'PaymentController');
 
+    // Pedidos EuPago (read-only)
+    Route::resource('pedidos', 'PedidosController')->only(['index', 'show']);
+
     // Content Category
     Route::delete('content-categories/destroy', 'ContentCategoryController@massDestroy')->name('content-categories.massDestroy');
     Route::resource('content-categories', 'ContentCategoryController');

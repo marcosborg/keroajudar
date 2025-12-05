@@ -106,6 +106,14 @@
                     {{ trans('cruds.payment.title') }}
                 </a>
             </li>
+            <li class="c-sidebar-nav-item">
+                <a href="{{ route("admin.pedidos.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/pedidos") || request()->is("admin/pedidos/*") ? "c-active" : "" }}">
+                    <i class="fa-fw fas fa-file-invoice-dollar c-sidebar-nav-icon">
+
+                    </i>
+                    Pedidos EuPago
+                </a>
+            </li>
         @endcan
         @can('beneficiary_management_access')
             <li class="c-sidebar-nav-dropdown {{ request()->is("admin/beneficiary-categories*") ? "c-show" : "" }} {{ request()->is("admin/beneficiaries*") ? "c-show" : "" }}">
