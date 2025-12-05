@@ -18,6 +18,7 @@ class Beneficiary extends Model implements HasMedia
 
     protected $appends = [
         'photo',
+        'cover_url',
     ];
 
     protected $dates = [
@@ -62,5 +63,12 @@ class Beneficiary extends Model implements HasMedia
         }
 
         return $file;
+    }
+
+    public function getCoverUrlAttribute()
+    {
+        $media = $this->getMedia('photo')->last();
+
+        return $media ? $media->getFullUrl('preview') : asset('images/banner-ajuda.png');
     }
 }

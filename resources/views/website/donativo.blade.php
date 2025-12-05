@@ -18,7 +18,7 @@
           <div class="row g-3 mb-4" id="categoryGrid">
             @foreach($categories as $category)
               @php
-                  $cover = $category->image ? ($category->image->preview ?? $category->image->url) : '/images/banner-ajuda.png';
+                  $cover = $category->cover_url;
               @endphp
               <div class="col-md-6">
                 <button type="button"

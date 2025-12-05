@@ -23,13 +23,13 @@ class WebsiteController extends Controller
                 'id'            => $c->id,
                 'name'          => $c->name,
                 'description'   => $c->description,
-                'image'         => $c->image?->preview ?? $c->image?->url,
+                'image'         => $c->cover_url,
                 'beneficiaries' => $c->beneficiaries->map(function ($b) {
                     return [
                         'id'          => $b->id,
                         'name'        => $b->name,
                         'description' => $b->description,
-                        'image'       => $b->photo?->preview ?? $b->photo?->url,
+                        'image'       => $b->cover_url,
                     ];
                 })->values(),
             ];
