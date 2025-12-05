@@ -23,9 +23,9 @@ class Payment extends Model
     ];
 
     public const METHOD_RADIO = [
-        'cartão'        => 'cartão',
+        'cartao'        => 'cartão',
         'MBWay'         => 'MBWay',
-        'transferência' => 'transferência',
+        'transferencia' => 'transferência',
     ];
 
     public const STATUS_RADIO = [

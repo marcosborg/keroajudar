@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BeneficiaryCategory;
 use Illuminate\Http\Request;
 
 class WebsiteController extends Controller
@@ -13,7 +14,11 @@ class WebsiteController extends Controller
 
     public function donativo()
     {
-        return view('website.donativo');
+        $categories = BeneficiaryCategory::with(['media', 'beneficiaries' => function ($query) {
+            $query->where('active', true)->with('media');
+        }])->get();
+
+        return view('website.donativo', compact('categories'));
     }
 
     public function quemSomos()

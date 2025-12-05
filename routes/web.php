@@ -4,7 +4,7 @@ use App\Http\Controllers\WebsiteController;
 
 Route::prefix('/')->group(function() {
     Route::get('/', [WebsiteController::class, 'index'])->name('website.home');
-    Route::get('donativo', [WebsiteController::class, 'donativo'])->name('website.home');
+    Route::get('donativo', [WebsiteController::class, 'donativo'])->name('website.donativo');
     Route::get('quem-somos', [WebsiteController::class, 'quemSomos'])->name('website.quem-somos');
     Route::get('contactos', [WebsiteController::class, 'contactos'])->name('website.contactos');
 });
@@ -66,6 +66,16 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('content-pages/media', 'ContentPageController@storeMedia')->name('content-pages.storeMedia');
     Route::post('content-pages/ckmedia', 'ContentPageController@storeCKEditorImages')->name('content-pages.storeCKEditorImages');
     Route::resource('content-pages', 'ContentPageController');
+
+    // Beneficiary Categories
+    Route::delete('beneficiary-categories/destroy', 'BeneficiaryCategoryController@massDestroy')->name('beneficiary-categories.massDestroy');
+    Route::post('beneficiary-categories/media', 'BeneficiaryCategoryController@storeMedia')->name('beneficiary-categories.storeMedia');
+    Route::resource('beneficiary-categories', 'BeneficiaryCategoryController');
+
+    // Beneficiaries
+    Route::delete('beneficiaries/destroy', 'BeneficiaryController@massDestroy')->name('beneficiaries.massDestroy');
+    Route::post('beneficiaries/media', 'BeneficiaryController@storeMedia')->name('beneficiaries.storeMedia');
+    Route::resource('beneficiaries', 'BeneficiaryController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

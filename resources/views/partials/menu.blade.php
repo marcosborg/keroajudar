@@ -107,6 +107,38 @@
                 </a>
             </li>
         @endcan
+        @can('beneficiary_management_access')
+            <li class="c-sidebar-nav-dropdown {{ request()->is("admin/beneficiary-categories*") ? "c-show" : "" }} {{ request()->is("admin/beneficiaries*") ? "c-show" : "" }}">
+                <a class="c-sidebar-nav-dropdown-toggle" href="#">
+                    <i class="fa-fw fas fa-hand-holding-heart c-sidebar-nav-icon">
+
+                    </i>
+                    {{ trans('cruds.beneficiaryManagement.title') }}
+                </a>
+                <ul class="c-sidebar-nav-dropdown-items">
+                    @can('beneficiary_category_access')
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.beneficiary-categories.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/beneficiary-categories") || request()->is("admin/beneficiary-categories/*") ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-layer-group c-sidebar-nav-icon">
+
+                                </i>
+                                {{ trans('cruds.beneficiaryCategory.title') }}
+                            </a>
+                        </li>
+                    @endcan
+                    @can('beneficiary_access')
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.beneficiaries.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/beneficiaries") || request()->is("admin/beneficiaries/*") ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-users c-sidebar-nav-icon">
+
+                                </i>
+                                {{ trans('cruds.beneficiary.title') }}
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
+            </li>
+        @endcan
         @can('content_management_access')
             <li class="c-sidebar-nav-dropdown {{ request()->is("admin/content-categories*") ? "c-show" : "" }} {{ request()->is("admin/content-tags*") ? "c-show" : "" }} {{ request()->is("admin/content-pages*") ? "c-show" : "" }}">
                 <a class="c-sidebar-nav-dropdown-toggle" href="#">

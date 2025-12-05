@@ -40,6 +40,11 @@
             </button>
 
             <ul class="c-header-nav ml-auto">
+                <li class="c-header-nav-item d-md-down-none">
+                    <a class="c-header-nav-link d-flex align-items-center" href="{{ route('website.home') }}" target="_blank" rel="noopener">
+                        <i class="fas fa-external-link-alt mr-1"></i> <span>Ver site</span>
+                    </a>
+                </li>
                 @if(count(config('panel.available_languages', [])) > 1)
                     <li class="c-header-nav-item dropdown d-md-down-none">
                         <a class="c-header-nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
