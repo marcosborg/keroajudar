@@ -99,6 +99,12 @@ return [
             ],
         ],
 
+        'eupago' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/eupago.log'),
+            'level' => env('LOG_LEVEL', 'info'),
+        ],
+
         'syslog' => [
             'driver' => 'syslog',
             'level' => env('LOG_LEVEL', 'debug'),
