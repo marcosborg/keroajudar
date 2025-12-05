@@ -18,7 +18,24 @@ class WebsiteController extends Controller
             $query->where('active', true)->with('media');
         }])->get();
 
-        return view('website.donativo', compact('categories'));
+        $categoriesForJs = $categories->map(function ($c) {
+            return [
+                'id'            => $c->id,
+                'name'          => $c->name,
+                'description'   => $c->description,
+                'image'         => $c->image?->preview ?? $c->image?->url,
+                'beneficiaries' => $c->beneficiaries->map(function ($b) {
+                    return [
+                        'id'          => $b->id,
+                        'name'        => $b->name,
+                        'description' => $b->description,
+                        'image'       => $b->photo?->preview ?? $b->photo?->url,
+                    ];
+                })->values(),
+            ];
+        })->values();
+
+        return view('website.donativo', compact('categories', 'categoriesForJs'));
     }
 
     public function quemSomos()

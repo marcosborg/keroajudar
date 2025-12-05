@@ -230,20 +230,7 @@
 @push('scripts')
 <script>
   (function(){
-    const categories = @json(
-      $categories->map(fn($c) => [
-        'id' => $c->id,
-        'name' => $c->name,
-        'description' => $c->description,
-        'image' => $c->image?->preview ?? $c->image?->url,
-        'beneficiaries' => $c->beneficiaries->map(fn($b) => [
-          'id' => $b->id,
-          'name' => $b->name,
-          'description' => $b->description,
-          'image' => $b->photo?->preview ?? $b->photo?->url,
-        ]),
-      ])
-    );
+    const categories = @json($categoriesForJs);
 
     const categoryGrid = document.getElementById('categoryGrid');
     const beneficiaryGrid = document.getElementById('beneficiaryGrid');
