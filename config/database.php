@@ -2,6 +2,28 @@
 
 use Illuminate\Support\Str;
 
+$appEnv = strtolower(env('APP_ENV', 'local'));
+$databaseMode = in_array($appEnv, ['production', 'prod'], true) ? 'production' : 'sandbox';
+
+$mysqlProfiles = [
+    'sandbox' => [
+        'host' => env('DB_HOST_SANDBOX', env('DB_HOST', '127.0.0.1')),
+        'port' => env('DB_PORT_SANDBOX', env('DB_PORT', '3306')),
+        'database' => env('DB_DATABASE_SANDBOX', env('DB_DATABASE', 'forge')),
+        'username' => env('DB_USERNAME_SANDBOX', env('DB_USERNAME', 'forge')),
+        'password' => env('DB_PASSWORD_SANDBOX', env('DB_PASSWORD', '')),
+    ],
+    'production' => [
+        'host' => env('DB_HOST_PRODUCTION', env('DB_HOST', '127.0.0.1')),
+        'port' => env('DB_PORT_PRODUCTION', env('DB_PORT', '3306')),
+        'database' => env('DB_DATABASE_PRODUCTION', env('DB_DATABASE', 'forge')),
+        'username' => env('DB_USERNAME_PRODUCTION', env('DB_USERNAME', 'forge')),
+        'password' => env('DB_PASSWORD_PRODUCTION', env('DB_PASSWORD', '')),
+    ],
+];
+
+$mysqlProfile = $mysqlProfiles[$databaseMode];
+
 return [
 
     /*
@@ -46,11 +68,11 @@ return [
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'host' => $mysqlProfile['host'],
+            'port' => $mysqlProfile['port'],
+            'database' => $mysqlProfile['database'],
+            'username' => $mysqlProfile['username'],
+            'password' => $mysqlProfile['password'],
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
