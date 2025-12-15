@@ -241,6 +241,8 @@
     const selectedBeneficiaryLabel = document.getElementById('selectedBeneficiaryLabel');
     const categoryInput = document.getElementById('category_id');
     const beneficiaryInput = document.getElementById('beneficiary_id');
+    const params = new URLSearchParams(window.location.search);
+    const preselectBeneficiaryId = Number(params.get('beneficiary_id'));
 
     categoryGrid?.querySelectorAll('.tile-card').forEach(card => {
       card.addEventListener('click', () => {
@@ -288,6 +290,30 @@
         beneficiaryGrid.appendChild(col);
       });
     }
+
+    function handlePreselect() {
+      if (!preselectBeneficiaryId) return;
+      const targetCategory = categories.find(cat => (cat.beneficiaries || []).some(b => b.id === preselectBeneficiaryId));
+      if (!targetCategory) return;
+
+      const categoryCard = categoryGrid.querySelector(`[data-category-id="${targetCategory.id}"]`);
+      if (categoryCard) {
+        categoryCard.click();
+      } else {
+        categoryInput.value = targetCategory.id;
+        renderBeneficiaries(targetCategory.id);
+      }
+
+      setTimeout(() => {
+        const beneficiaryCard = beneficiaryGrid.querySelector(`[data-beneficiary-id="${preselectBeneficiaryId}"]`);
+        if (beneficiaryCard) {
+          beneficiaryCard.click();
+          selectedCategoryLabel.textContent = targetCategory.name;
+        }
+      }, 100);
+    }
+
+    handlePreselect();
 
     // Valor chips
     const group = document.getElementById('amountGroup');

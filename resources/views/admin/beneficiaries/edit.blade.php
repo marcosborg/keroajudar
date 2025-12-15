@@ -75,6 +75,26 @@
                 <span class="help-block">{{ trans('cruds.beneficiary.fields.contact_email_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required" for="email">Email (login)</label>
+                <input class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" type="email" name="email" id="email" value="{{ old('email', $beneficiary->email) }}" required>
+                @if($errors->has('email'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('email') }}
+                    </div>
+                @endif
+                <span class="help-block">Email usado para o login do beneficiário.</span>
+            </div>
+            <div class="form-group">
+                <label for="password">Password (login)</label>
+                <input class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" type="password" name="password" id="password">
+                @if($errors->has('password'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('password') }}
+                    </div>
+                @endif
+                <span class="help-block">Preencha apenas se quiser alterar a password.</span>
+            </div>
+            <div class="form-group">
                 <label for="contact_phone">{{ trans('cruds.beneficiary.fields.contact_phone') }}</label>
                 <input class="form-control {{ $errors->has('contact_phone') ? 'is-invalid' : '' }}" type="text" name="contact_phone" id="contact_phone" value="{{ old('contact_phone', $beneficiary->contact_phone) }}">
                 @if($errors->has('contact_phone'))

@@ -49,6 +49,18 @@ class UpdateBeneficiaryRequest extends FormRequest
                 'string',
                 'max:64',
             ],
+            'email' => [
+                'nullable',
+                'string',
+                'email',
+                'max:255',
+                'unique:beneficiaries,email,' . request()->route('beneficiary')->id,
+            ],
+            'password' => [
+                'nullable',
+                'string',
+                'min:8',
+            ],
             'website' => [
                 'nullable',
                 'string',

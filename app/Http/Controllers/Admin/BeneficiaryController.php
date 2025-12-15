@@ -40,6 +40,11 @@ class BeneficiaryController extends Controller
     {
         $beneficiary = Beneficiary::create($request->all());
 
+        if ($beneficiary->active && ! $beneficiary->approved_at) {
+            $beneficiary->approved_at = now();
+            $beneficiary->save();
+        }
+
         if ($request->input('photo', false)) {
             $beneficiary->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
         }
@@ -69,6 +74,16 @@ class BeneficiaryController extends Controller
     public function update(UpdateBeneficiaryRequest $request, Beneficiary $beneficiary)
     {
         $beneficiary->update($request->all());
+
+        if ($beneficiary->active && ! $beneficiary->approved_at) {
+            $beneficiary->approved_at = now();
+            $beneficiary->save();
+        }
+
+        if (! $beneficiary->active) {
+            $beneficiary->approved_at = null;
+            $beneficiary->save();
+        }
 
         if ($request->input('photo', false)) {
             if (! $beneficiary->photo || $request->input('photo') !== $beneficiary->photo->file_name) {

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt">
 <head>
     <!-- Consent Mode default (v2) -->
@@ -26,7 +26,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kero Ajudar · Home</title>
+    <title>Kero Ajudar Â· Home</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Icons -->
@@ -43,7 +43,7 @@
         <div class="consent-content">
             <div class="consent-text">
                 <strong>Privacidade</strong>
-                <p class="mb-0">Usamos cookies para melhorar a experiência e medir tráfego. Pode aceitar ou recusar.</p>
+                <p class="mb-0">Usamos cookies para melhorar a experiÃªncia e medir trÃ¡fego. Pode aceitar ou recusar.</p>
             </div>
             <div class="consent-actions">
                 <button type="button" class="btn btn-outline-light btn-sm" id="consent-reject">Recusar</button>
@@ -63,8 +63,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
-                    <li class="nav-item"><a class="nav-link active" href="/">Início</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/">InÃ­cio</a></li>
                     <li class="nav-item"><a class="nav-link" href="/donativo">Donativo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/beneficiarios">Beneficiarios</a></li>
                     <li class="nav-item"><a class="nav-link" href="/quem-somos">Quem Somos</a></li>
                     <li class="nav-item"><a class="nav-link" href="/contactos">Contactos</a></li>
                     @auth
@@ -108,6 +109,107 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .consent-banner {
+            position: fixed;
+            inset: auto 0 0 0;
+            z-index: 1050;
+            background: rgba(25, 135, 84, 0.95);
+            color: #fff;
+            padding: 14px 18px;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.2);
+        }
+        .consent-banner .consent-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .consent-banner .consent-text p {
+            margin: 4px 0 0 0;
+            opacity: 0.95;
+        }
+        .consent-banner .consent-actions {
+            display: flex;
+            gap: 8px;
+        }
+        @media (max-width: 576px) {
+            .consent-banner .consent-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .consent-banner .consent-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+    <script>
+        (function() {
+            const banner = document.getElementById('consent-banner');
+            if (!banner) return;
+
+            const STORAGE_KEY = 'consent_prefs_v1';
+
+            function applyConsent(consent) {
+                if (typeof gtag !== 'function') return;
+                gtag('consent', 'update', consent);
+            }
+
+            function save(choice) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(choice));
+            }
+
+            function load() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    return raw ? JSON.parse(raw) : null;
+                } catch (_) {
+                    return null;
+                }
+            }
+
+            const stored = load();
+            if (stored) {
+                applyConsent(stored);
+                return;
+            }
+
+            banner.classList.remove('d-none');
+
+            document.getElementById('consent-accept').addEventListener('click', function() {
+                const granted = {
+                    ad_user_data: 'granted',
+                    ad_personalization: 'granted',
+                    ad_storage: 'granted',
+                    analytics_storage: 'granted',
+                    functionality_storage: 'granted',
+                    personalization_storage: 'granted',
+                    security_storage: 'granted'
+                };
+                applyConsent(granted);
+                save(granted);
+                banner.remove();
+            });
+
+            document.getElementById('consent-reject').addEventListener('click', function() {
+                const denied = {
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied',
+                    ad_storage: 'denied',
+                    analytics_storage: 'denied',
+                    functionality_storage: 'granted',
+                    personalization_storage: 'denied',
+                    security_storage: 'granted'
+                };
+                applyConsent(denied);
+                save(denied);
+                banner.remove();
+            });
+        })();
+    </script>
     @stack('scripts')
 </body>
 </html>

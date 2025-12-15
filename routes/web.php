@@ -9,6 +9,23 @@ Route::prefix('/')->group(function() {
     Route::get('contactos', [WebsiteController::class, 'contactos'])->name('website.contactos');
 });
 
+Route::prefix('beneficiarios')->name('beneficiaries.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\BeneficiaryPortalController::class, 'index'])->name('index');
+    Route::get('registar', [\App\Http\Controllers\BeneficiaryPortalController::class, 'showRegister'])->name('register');
+    Route::post('registar', [\App\Http\Controllers\BeneficiaryPortalController::class, 'register'])->name('register.store');
+    Route::get('login', [\App\Http\Controllers\BeneficiaryPortalController::class, 'showLogin'])->name('login');
+    Route::post('login', [\App\Http\Controllers\BeneficiaryPortalController::class, 'login'])->name('login.store');
+    Route::get('password/forgot', [\App\Http\Controllers\BeneficiaryPasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('password/email', [\App\Http\Controllers\BeneficiaryPasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('password/reset/{token}', [\App\Http\Controllers\BeneficiaryPasswordResetController::class, 'showResetForm'])->name('password.reset');
+    Route::post('password/reset', [\App\Http\Controllers\BeneficiaryPasswordResetController::class, 'reset'])->name('password.update');
+    Route::middleware('auth:beneficiary')->group(function () {
+        Route::get('area', [\App\Http\Controllers\BeneficiaryPortalController::class, 'area'])->name('area');
+        Route::post('area', [\App\Http\Controllers\BeneficiaryPortalController::class, 'update'])->name('area.update');
+        Route::post('logout', [\App\Http\Controllers\BeneficiaryPortalController::class, 'logout'])->name('logout');
+    });
+});
+
 Route::get('/home', function () {
     if (session('status')) {
         return redirect()->route('admin.home')->with('status', session('status'));

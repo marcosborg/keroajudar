@@ -49,6 +49,18 @@ class StoreBeneficiaryRequest extends FormRequest
                 'string',
                 'max:64',
             ],
+            'email' => [
+                'nullable',
+                'string',
+                'email',
+                'max:255',
+                'unique:beneficiaries,email',
+            ],
+            'password' => [
+                'nullable',
+                'string',
+                'min:8',
+            ],
             'website' => [
                 'nullable',
                 'string',

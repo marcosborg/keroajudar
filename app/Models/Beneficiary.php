@@ -4,15 +4,18 @@ namespace App\Models;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
+use App\Notifications\BeneficiaryResetPassword;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Beneficiary extends Model implements HasMedia
+class Beneficiary extends Authenticatable implements HasMedia
 {
-    use SoftDeletes, InteractsWithMedia, HasFactory;
+    use SoftDeletes, InteractsWithMedia, HasFactory, Notifiable;
 
     public $table = 'beneficiaries';
 
@@ -36,19 +39,48 @@ class Beneficiary extends Model implements HasMedia
         'vat_number',
         'contact_email',
         'contact_phone',
+        'email',
+        'password',
         'website',
         'address',
         'city',
         'country',
         'active',
+        'approved_at',
+        'last_login_at',
         'created_at',
         'updated_at',
         'deleted_at',
     ];
 
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'approved_at' => 'datetime',
+        'last_login_at' => 'datetime',
+        'active' => 'boolean',
+    ];
+
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        if (!$value) {
+            return;
+        }
+        $this->attributes['password'] = Hash::needsRehash($value) ? Hash::make($value) : $value;
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $url = route('beneficiaries.password.reset', ['token' => $token, 'email' => $this->email]);
+        $this->notify(new BeneficiaryResetPassword($token, $url));
     }
 
     public function registerMediaConversions(Media $media = null): void
