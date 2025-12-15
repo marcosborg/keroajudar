@@ -39,6 +39,18 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P5JGM585"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
+    <div id="consent-banner" class="consent-banner d-none">
+        <div class="consent-content">
+            <div class="consent-text">
+                <strong>Privacidade</strong>
+                <p class="mb-0">Usamos cookies para melhorar a experiência e medir tráfego. Pode aceitar ou recusar.</p>
+            </div>
+            <div class="consent-actions">
+                <button type="button" class="btn btn-outline-light btn-sm" id="consent-reject">Recusar</button>
+                <button type="button" class="btn btn-light btn-sm" id="consent-accept">Aceitar</button>
+            </div>
+        </div>
+    </div>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
         <div class="container">
