@@ -32,6 +32,15 @@
                         <label for="contactMessage" class="form-label">Mensagem</label>
                         <textarea class="form-control" id="contactMessage" name="contactMessage" rows="5" required></textarea>
                     </div>
+                    @if(config('services.recaptcha.site_key'))
+                        <div class="mb-3">
+                            <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+                        </div>
+                    @else
+                        <div class="alert alert-warning" role="alert">
+                            Configure a sua chave do reCAPTCHA em RECAPTCHA_SITE_KEY para ativar a validação anti-spam.
+                        </div>
+                    @endif
                     <button type="submit" class="btn btn-success">Enviar</button>
                 </form>
             </div>
@@ -39,3 +48,23 @@
     </div>
 </main>
 @endsection
+
+@push('scripts')
+@if(config('services.recaptcha.site_key'))
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+    (function() {
+        const form = document.getElementById('contactForm');
+        if (!form) return;
+
+        form.addEventListener('submit', function(event) {
+            const captchaResponse = form.querySelector('.g-recaptcha-response');
+            if (!captchaResponse || !captchaResponse.value) {
+                event.preventDefault();
+                alert('Por favor, confirme que não é um robô.');
+            }
+        });
+    })();
+</script>
+@endif
+@endpush
