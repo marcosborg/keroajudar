@@ -19,6 +19,7 @@ class Beneficiary extends Model implements HasMedia
     protected $appends = [
         'photo',
         'cover_url',
+        'logo_square',
     ];
 
     protected $dates = [
@@ -31,6 +32,14 @@ class Beneficiary extends Model implements HasMedia
         'beneficiary_category_id',
         'name',
         'description',
+        'about',
+        'vat_number',
+        'contact_email',
+        'contact_phone',
+        'website',
+        'address',
+        'city',
+        'country',
         'active',
         'created_at',
         'updated_at',
@@ -46,6 +55,9 @@ class Beneficiary extends Model implements HasMedia
     {
         $this->addMediaConversion('thumb')->fit('crop', 50, 50);
         $this->addMediaConversion('preview')->fit('crop', 480, 320);
+
+        $this->addMediaConversion('logo_thumb')->fit('crop', 300, 300)->performOnCollections('logo');
+        $this->addMediaConversion('logo_preview')->fit('crop', 300, 300)->performOnCollections('logo');
     }
 
     public function category()
@@ -60,6 +72,19 @@ class Beneficiary extends Model implements HasMedia
             $file->url       = $file->getUrl();
             $file->thumbnail = $file->getUrl('thumb');
             $file->preview   = $file->getUrl('preview');
+        }
+
+        return $file;
+    }
+
+    public function getLogoSquareAttribute()
+    {
+        $file = $this->getMedia('logo')->last();
+
+        if ($file) {
+            $file->url       = $file->getUrl();
+            $file->thumbnail = $file->getUrl('logo_thumb');
+            $file->preview   = $file->getUrl('logo_preview');
         }
 
         return $file;

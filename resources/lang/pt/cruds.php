@@ -299,9 +299,9 @@ return [
             'deleted_at_helper' => ' ',
         ],
     ],
-    'beneficiary' => [
-        'title'          => 'Beneficiários',
-        'title_singular' => 'Beneficiário',
+        'beneficiary' => [
+        'title'          => 'Beneficiarios',
+        'title_singular' => 'Beneficiario',
         'fields'         => [
             'id'                   => 'ID',
             'id_helper'            => ' ',
@@ -311,10 +311,28 @@ return [
             'category_helper'      => ' ',
             'name'                 => 'Nome',
             'name_helper'          => ' ',
-            'description'          => 'Descrição',
+            'description'          => 'Descricao',
             'description_helper'   => 'Breve resumo',
+            'about'                => 'Sobre (pagina da empresa)',
+            'about_helper'         => 'Texto rico para a pagina dedicada do beneficiario',
+            'vat_number'           => 'NIF/NIPC',
+            'vat_number_helper'    => ' ',
+            'contact_email'        => 'Email de contacto',
+            'contact_email_helper' => ' ',
+            'contact_phone'        => 'Telefone',
+            'contact_phone_helper' => ' ',
+            'website'              => 'Website',
+            'website_helper'       => 'Inclua http(s)://',
+            'address'              => 'Morada',
+            'address_helper'       => 'Rua e numero',
+            'city'                 => 'Cidade',
+            'city_helper'          => ' ',
+            'country'              => 'Pais',
+            'country_helper'       => ' ',
             'photo'                => 'Imagem',
             'photo_helper'         => 'Imagem para o bloco',
+            'logo_square'          => 'Logo quadrado (300x300)',
+            'logo_square_helper'   => 'Logo para listagens / cartoes (formato quadrado)',
             'active'               => 'Ativo',
             'active_helper'        => 'Mostrar no site',
             'created_at'           => 'Created at',
@@ -327,3 +345,4 @@ return [
     ],
 
 ];
+

@@ -30,6 +30,45 @@ class UpdateBeneficiaryRequest extends FormRequest
             'description' => [
                 'nullable',
             ],
+            'about' => [
+                'nullable',
+            ],
+            'vat_number' => [
+                'nullable',
+                'string',
+                'max:64',
+            ],
+            'contact_email' => [
+                'nullable',
+                'string',
+                'email',
+                'max:255',
+            ],
+            'contact_phone' => [
+                'nullable',
+                'string',
+                'max:64',
+            ],
+            'website' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+            'address' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+            'city' => [
+                'nullable',
+                'string',
+                'max:128',
+            ],
+            'country' => [
+                'nullable',
+                'string',
+                'max:128',
+            ],
             'active' => [
                 'boolean',
             ],

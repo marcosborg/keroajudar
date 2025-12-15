@@ -11,6 +11,7 @@ use App\Models\Beneficiary;
 use App\Models\BeneficiaryCategory;
 use Gate;
 use Illuminate\Http\Request;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
 
 class BeneficiaryController extends Controller
@@ -43,6 +44,14 @@ class BeneficiaryController extends Controller
             $beneficiary->addMedia(storage_path('tmp/uploads/' . basename($request->input('photo'))))->toMediaCollection('photo');
         }
 
+        if ($request->input('logo_square', false)) {
+            $beneficiary->addMedia(storage_path('tmp/uploads/' . basename($request->input('logo_square'))))->toMediaCollection('logo');
+        }
+
+        if ($media = $request->input('ck-media', false)) {
+            Media::whereIn('id', $media)->update(['model_id' => $beneficiary->id]);
+        }
+
         return redirect()->route('admin.beneficiaries.index');
     }
 
@@ -52,7 +61,7 @@ class BeneficiaryController extends Controller
 
         $beneficiary_categories = BeneficiaryCategory::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $beneficiary->load('category');
+        $beneficiary->load('category', 'media');
 
         return view('admin.beneficiaries.edit', compact('beneficiary', 'beneficiary_categories'));
     }
@@ -72,6 +81,21 @@ class BeneficiaryController extends Controller
             $beneficiary->photo->delete();
         }
 
+        if ($request->input('logo_square', false)) {
+            if (! $beneficiary->logo_square || $request->input('logo_square') !== $beneficiary->logo_square->file_name) {
+                if ($beneficiary->logo_square) {
+                    $beneficiary->logo_square->delete();
+                }
+                $beneficiary->addMedia(storage_path('tmp/uploads/' . basename($request->input('logo_square'))))->toMediaCollection('logo');
+            }
+        } elseif ($beneficiary->logo_square) {
+            $beneficiary->logo_square->delete();
+        }
+
+        if ($media = $request->input('ck-media', false)) {
+            Media::whereIn('id', $media)->update(['model_id' => $beneficiary->id]);
+        }
+
         return redirect()->route('admin.beneficiaries.index');
     }
 
@@ -79,7 +103,7 @@ class BeneficiaryController extends Controller
     {
         abort_if(Gate::denies('beneficiary_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $beneficiary->load('category');
+        $beneficiary->load('category', 'media');
 
         return view('admin.beneficiaries.show', compact('beneficiary'));
     }
@@ -102,5 +126,17 @@ class BeneficiaryController extends Controller
         }
 
         return response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    public function storeCKEditorImages(Request $request)
+    {
+        abort_if(Gate::denies('beneficiary_create') && Gate::denies('beneficiary_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $model         = new Beneficiary();
+        $model->id     = $request->input('crud_id', 0);
+        $model->exists = true;
+        $media         = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
+
+        return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
     }
 }
