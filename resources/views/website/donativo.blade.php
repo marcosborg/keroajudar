@@ -1,4 +1,4 @@
-@extends('layouts.website')
+﻿@extends('layouts.website')
 @php use Illuminate\Support\Str; @endphp
 
 @section('body-class', 'donation-bg')
@@ -6,12 +6,53 @@
 @section('content')
 <main class="py-5 donation-bg">
   <div class="container">
+    @if(isset($beneficiarySelected) && $beneficiarySelected)
+      @php
+        $share = urlencode($shareUrl);
+        $titleShare = urlencode('Apoie ' . $beneficiarySelected->name . ' na Kero Ajudar');
+      @endphp
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="row g-0 align-items-center">
+          <div class="col-lg-5">
+            <div class="ratio ratio-16x9 rounded-start" style="background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.45)), url('{{ $beneficiarySelected->cover_url }}') center/cover no-repeat;"></div>
+          </div>
+          <div class="col-lg-7">
+            <div class="p-4">
+              <p class="text-uppercase text-success fw-semibold mb-1">{{ $beneficiarySelected->category->name ?? 'BeneficiÃ¡rio' }}</p>
+              <h2 class="mb-2">{{ $beneficiarySelected->name }}</h2>
+              @if($beneficiarySelected->description)
+                <p class="text-muted">{{ \Illuminate\Support\Str::limit($beneficiarySelected->description, 200) }}</p>
+              @endif
+              <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                <a class="btn btn-success" href="#donationFormWrapper">Oferecer um donativo</a>
+                <button class="btn btn-outline-secondary" type="button" onclick="navigator.clipboard.writeText('{{ $shareUrl }}')">Copiar link</button>
+              </div>
+              <div class="d-flex flex-wrap gap-2 align-items-center">
+                <span class="text-muted small">Partilhar:</span>
+                <a class="btn btn-sm btn-outline-primary" href="https://www.facebook.com/sharer/sharer.php?u={{ $share }}" target="_blank" rel="noopener">
+                  <i class="bi bi-facebook"></i> Facebook
+                </a>
+                <a class="btn btn-sm btn-outline-info" href="https://twitter.com/intent/tweet?url={{ $share }}&text={{ $titleShare }}" target="_blank" rel="noopener">
+                  <i class="bi bi-twitter"></i> Twitter
+                </a>
+                <a class="btn btn-sm btn-outline-success" href="https://api.whatsapp.com/send?text={{ $titleShare }}%20{{ $share }}" target="_blank" rel="noopener">
+                  <i class="bi bi-whatsapp"></i> WhatsApp
+                </a>
+                <a class="btn btn-sm btn-outline-primary" href="https://www.linkedin.com/sharing/share-offsite/?url={{ $share }}" target="_blank" rel="noopener">
+                  <i class="bi bi-linkedin"></i> LinkedIn
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    @endif
     <div class="row g-4">
-      <div class="col-lg-8">
+      <div class="col-12">
         <div class="form-shell">
-          <h1 class="mb-1" style="color:#157347">Faça um Donativo</h1>
+          <h1 class="mb-1" style="color:#157347">FaÃ§a um Donativo</h1>
           <p class="text-muted mb-4">
-            Selecione primeiro a categoria e o beneficiário que quer apoiar. Depois preencha os seus dados para concluir o donativo.
+            Selecione primeiro a categoria e o beneficiÃ¡rio que quer apoiar. Depois preencha os seus dados para concluir o donativo.
           </p>
 
           <div class="section-title">Escolha uma categoria</div>
@@ -36,7 +77,7 @@
             @endforeach
           </div>
 
-          <div class="section-title d-none" id="beneficiaryStep">Escolha o beneficiário</div>
+          <div class="section-title d-none" id="beneficiaryStep">Escolha o beneficiÃ¡rio</div>
           <div class="row g-3 mb-4 d-none" id="beneficiaryGrid"></div>
 
           <div id="selectedSummary" class="alert alert-success d-none mb-4">
@@ -54,13 +95,13 @@
               <div class="amount-group mb-3" id="amountGroup">
                 <label class="amount-chip" data-value="15">
                   <input type="radio" name="donationAmount" id="amount15" value="15" required>
-                  15€
+                  15â‚¬
                 </label>
                 <label class="amount-chip" data-value="25">
-                  <input type="radio" name="donationAmount" id="amount25" value="25"> 25€
+                  <input type="radio" name="donationAmount" id="amount25" value="25"> 25â‚¬
                 </label>
                 <label class="amount-chip" data-value="50">
-                  <input type="radio" name="donationAmount" id="amount50" value="50"> 50€
+                  <input type="radio" name="donationAmount" id="amount50" value="50"> 50â‚¬
                 </label>
                 <label class="amount-chip" data-value="other" id="chipOther">
                   <input type="radio" name="donationAmount" id="amountOther" value="other"> Outro valor
@@ -69,8 +110,8 @@
               <div class="mb-4 d-none" id="otherAmountGroup">
                 <div class="section-title" style="margin:0"> </div>
                 <div class="compact">
-                  <label for="otherAmount" class="form-label m-0">Introduza o valor (€)</label>
-                  <input type="number" class="form-control" id="otherAmount" name="otherAmount" min="3" step="1" placeholder="Mínimo 3€" />
+                  <label for="otherAmount" class="form-label m-0">Introduza o valor (â‚¬)</label>
+                  <input type="number" class="form-control" id="otherAmount" name="otherAmount" min="3" step="1" placeholder="MÃ­nimo 3â‚¬" />
                 </div>
               </div>
 
@@ -79,7 +120,7 @@
               <div class="mb-3">
                 <div class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" id="isCompany" name="isCompany" />
-                  <label class="form-check-label" for="isCompany">Sou uma Empresa/Organização</label>
+                  <label class="form-check-label" for="isCompany">Sou uma Empresa/OrganizaÃ§Ã£o</label>
                 </div>
               </div>
               <div class="mb-3 d-none" id="companyNameGroup">
@@ -121,7 +162,7 @@
                   </div>
                   <div class="col-4 col-md-4">
                     <select class="form-select" id="birthMonth" name="birthMonth">
-                      <option value="">Mês</option>
+                      <option value="">MÃªs</option>
                     </select>
                   </div>
                   <div class="col-4 col-md-3">
@@ -140,7 +181,7 @@
               </div>
               <div class="row">
                 <div class="col-md-4 mb-3">
-                  <label for="postalCode" class="form-label">Código Postal</label>
+                  <label for="postalCode" class="form-label">CÃ³digo Postal</label>
                   <input type="text" class="form-control" id="postalCode" name="postalCode" />
                 </div>
                 <div class="col-md-4 mb-3">
@@ -148,16 +189,16 @@
                   <input type="text" class="form-control" id="city" name="city" />
                 </div>
                 <div class="col-md-4 mb-3">
-                  <label for="country" class="form-label">País</label>
+                  <label for="country" class="form-label">PaÃ­s</label>
                   <select class="form-select" id="country" name="country">
                     <option value="">Selecione</option>
                     <option value="Portugal">Portugal</option>
                     <option value="Espanha">Espanha</option>
-                    <option value="França">França</option>
+                    <option value="FranÃ§a">FranÃ§a</option>
                     <option value="Alemanha">Alemanha</option>
                     <option value="Brasil">Brasil</option>
                     <option value="Angola">Angola</option>
-                    <option value="Moçambique">Moçambique</option>
+                    <option value="MoÃ§ambique">MoÃ§ambique</option>
                     <option value="Cabo Verde">Cabo Verde</option>
                     <option value="Outros">Outros</option>
                   </select>
@@ -181,13 +222,13 @@
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="privacyConsent" required />
                   <label class="form-check-label" for="privacyConsent">
-                    Confirmo que li e aceito a <a href="#">Política de Privacidade</a> *
+                    Confirmo que li e aceito a <a href="#">PolÃ­tica de Privacidade</a> *
                   </label>
                 </div>
               </div>
 
-              <!-- Preferências -->
-              <div class="section-title">Preferências de Contacto</div>
+              <!-- PreferÃªncias -->
+              <div class="section-title">PreferÃªncias de Contacto</div>
               <div class="mb-4">
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="infoMail" name="subscribe" value="mail" />
@@ -199,7 +240,7 @@
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="infoPhone" name="subscribe" value="phone" />
-                  <label class="form-check-label" for="infoPhone">Telemóvel</label>
+                  <label class="form-check-label" for="infoPhone">TelemÃ³vel</label>
                 </div>
               </div>
 
@@ -208,25 +249,11 @@
           </div>
         </div>
       </div>
-
-      <!-- Sidebar opcional (podes remover) -->
-      <div class="col-lg-4">
-        <div class="info-card h-100">
-          <h5 class="mb-3">Porque o seu gesto conta</h5>
-          <ul class="list-unstyled text-muted">
-            <li>• Apoia directamente famílias vulneráveis</li>
-            <li>• Transparência e relatório de impacto</li>
-            <li>• Benefícios fiscais aplicáveis</li>
-          </ul>
-          <hr>
-          <p class="small text-muted mb-0">Tem dúvidas? <a href="/contactos">Fale connosco</a>.</p>
-        </div>
-      </div>
     </div>
   </div>
 </main>
 
-{{-- JS leve para chips, condicionais e seleção de beneficiários --}}
+{{-- JS leve para chips, condicionais e seleÃ§Ã£o de beneficiÃ¡rios --}}
 @push('scripts')
 <script>
   (function(){
@@ -352,7 +379,7 @@
     const daySel = document.getElementById('birthDay');
     const monSel = document.getElementById('birthMonth');
     const yearSel = document.getElementById('birthYear');
-    const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const meses = ['Janeiro','Fevereiro','MarÃ§o','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
     for(let d=1; d<=31; d++){ daySel.insertAdjacentHTML('beforeend', `<option value="${d}">${d}</option>`); }
     meses.forEach((m,i)=> monSel.insertAdjacentHTML('beforeend', `<option value="${i+1}">${m}</option>`));
     const yNow = new Date().getFullYear();
@@ -361,3 +388,5 @@
 </script>
 @endpush
 @endsection
+
+
