@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Beneficiary;
 use App\Models\BeneficiaryCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class WebsiteController extends Controller
 {
@@ -18,24 +20,28 @@ class WebsiteController extends Controller
             $query->where('active', true)->with('media');
         }])->get();
 
-        $categoriesForJs = $categories->map(function ($c) {
-            return [
-                'id'            => $c->id,
-                'name'          => $c->name,
-                'description'   => $c->description,
-                'image'         => $c->cover_url,
-                'beneficiaries' => $c->beneficiaries->map(function ($b) {
-                    return [
-                        'id'          => $b->id,
-                        'name'        => $b->name,
-                        'description' => $b->description,
-                        'image'       => $b->cover_url,
-                    ];
-                })->values(),
-            ];
-        })->values();
+        $beneficiaries = Beneficiary::with(['category', 'media'])
+            ->where('active', true)
+            ->get();
 
-        return view('website.donativo', compact('categories', 'categoriesForJs'));
+        return view('website.donativo-list', compact('categories', 'beneficiaries'));
+    }
+
+    public function beneficiaryDonation(Beneficiary $beneficiary, $slug = null)
+    {
+        abort_unless($beneficiary->active, 404);
+
+        $expectedSlug = Str::slug($beneficiary->name);
+        if ($slug !== $expectedSlug) {
+            return redirect()->route('website.beneficiary.donate', ['beneficiary' => $beneficiary->id, 'slug' => $expectedSlug]);
+        }
+
+        return view('website.donativo', [
+            'beneficiarySelected' => $beneficiary->load(['category', 'media']),
+            'shareUrl' => route('website.beneficiary.donate', ['beneficiary' => $beneficiary->id, 'slug' => $expectedSlug]),
+            'categories' => collect(),
+            'categoriesForJs' => collect(),
+        ]);
     }
 
     public function quemSomos()

@@ -5,6 +5,7 @@ use App\Http\Controllers\WebsiteController;
 Route::prefix('/')->group(function() {
     Route::get('/', [WebsiteController::class, 'index'])->name('website.home');
     Route::get('donativo', [WebsiteController::class, 'donativo'])->name('website.donativo');
+    Route::get('beneficiario/{beneficiary}/{slug?}', [WebsiteController::class, 'beneficiaryDonation'])->name('website.beneficiary.donate');
     Route::get('quem-somos', [WebsiteController::class, 'quemSomos'])->name('website.quem-somos');
     Route::get('contactos', [WebsiteController::class, 'contactos'])->name('website.contactos');
 });

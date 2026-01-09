@@ -41,7 +41,7 @@
                                     @endif
                                 </div>
                                 <div class="card-footer bg-white d-flex justify-content-between align-items-center">
-                                    <a href="{{ route('website.donativo', ['beneficiary_id' => $beneficiary->id]) }}" class="btn btn-sm btn-success">Apoiar agora</a>
+                                    <a href="{{ route('website.beneficiary.donate', ['beneficiary' => $beneficiary->id, 'slug' => Str::slug($beneficiary->name)]) }}" class="btn btn-sm btn-success">Apoiar agora</a>
                                     <span class="text-muted small">ID: {{ $beneficiary->id }}</span>
                                 </div>
                             </div>
