@@ -26,13 +26,14 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kero Ajudar Â· Home</title>
+    <title>Kero Ajudar - Home</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{{ asset('website/styles.css') }}?v=20251205" />
+    @stack('styles')
 </head>
 <body class="@yield('body-class')">
     <!-- Google Tag Manager (noscript) -->
@@ -43,7 +44,7 @@
         <div class="consent-content">
             <div class="consent-text">
                 <strong>Privacidade</strong>
-                <p class="mb-0">Usamos cookies para melhorar a experiÃªncia e medir trÃ¡fego. Pode aceitar ou recusar.</p>
+                <p class="mb-0">Usamos cookies para melhorar a experi&ecirc;ncia e medir tr&aacute;fego. Pode aceitar ou recusar.</p>
             </div>
             <div class="consent-actions">
                 <button type="button" class="btn btn-outline-light btn-sm" id="consent-reject">Recusar</button>
@@ -63,9 +64,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
-                    <li class="nav-item"><a class="nav-link active" href="/">InÃ­cio</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/">In&iacute;cio</a></li>
                     <li class="nav-item"><a class="nav-link" href="/donativo">Donativo</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/beneficiarios">Beneficiarios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/beneficiarios">Benefici&aacute;rios</a></li>
                     <li class="nav-item"><a class="nav-link" href="/quem-somos">Quem Somos</a></li>
                     <li class="nav-item"><a class="nav-link" href="/contactos">Contactos</a></li>
                     @auth
@@ -213,3 +214,4 @@
     @stack('scripts')
 </body>
 </html>
+

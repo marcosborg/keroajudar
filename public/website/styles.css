@@ -12,6 +12,10 @@
   --green-700:#157347; --green-600:#198754; --green-500:#20c997;
 }
 
+body {
+  margin: 0;
+}
+
 /* ---------- HERO (Home) ---------- */
 .hero {
   /* Se quiseres o degradé por trás da foto, mantém a primeira linha; senão remove */

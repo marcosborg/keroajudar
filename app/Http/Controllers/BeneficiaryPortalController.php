@@ -116,9 +116,13 @@ class BeneficiaryPortalController extends Controller
         $data = $request->validate([
             'beneficiary_category_id' => ['required', 'exists:beneficiary_categories,id'],
             'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'vat_number' => ['nullable', 'string', 'max:255'],
+            'contact_email' => ['nullable', 'email', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('beneficiaries', 'email')->ignore($beneficiary->id)],
             'contact_phone' => ['nullable', 'string', 'max:50'],
             'website' => ['nullable', 'string', 'max:255'],
+            'address' => ['nullable', 'string', 'max:255'],
             'city' => ['nullable', 'string', 'max:255'],
             'country' => ['nullable', 'string', 'max:255'],
             'about' => ['nullable', 'string'],
@@ -131,7 +135,7 @@ class BeneficiaryPortalController extends Controller
         if (!empty($data['password'])) {
             $beneficiary->password = $data['password'];
         }
-        $beneficiary->contact_email = $data['email'];
+        $beneficiary->contact_email = $data['contact_email'] ?? $data['email'];
         $beneficiary->save();
 
         if ($request->hasFile('photo')) {

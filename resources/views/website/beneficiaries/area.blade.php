@@ -81,9 +81,21 @@
                                 <label class="form-label">Nome *</label>
                                 <input type="text" class="form-control" name="name" value="{{ old('name', $beneficiary->name) }}" required>
                             </div>
+                            <div class="col-12">
+                                <label class="form-label">Descricao</label>
+                                <textarea class="form-control" name="description" rows="3">{{ old('description', $beneficiary->description) }}</textarea>
+                            </div>
                             <div class="col-md-6">
                                 <label class="form-label">Email (login) *</label>
                                 <input type="email" class="form-control" name="email" value="{{ old('email', $beneficiary->email) }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email de contacto</label>
+                                <input type="email" class="form-control" name="contact_email" value="{{ old('contact_email', $beneficiary->contact_email) }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">NIF / VAT</label>
+                                <input type="text" class="form-control" name="vat_number" value="{{ old('vat_number', $beneficiary->vat_number) }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Telefone</label>
@@ -92,6 +104,10 @@
                             <div class="col-md-6">
                                 <label class="form-label">Website</label>
                                 <input type="text" class="form-control" name="website" value="{{ old('website', $beneficiary->website) }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Morada</label>
+                                <input type="text" class="form-control" name="address" value="{{ old('address', $beneficiary->address) }}">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Cidade</label>
