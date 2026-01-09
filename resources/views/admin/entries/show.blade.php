@@ -33,6 +33,24 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.entry.fields.beneficiary') }}
+                        </th>
+                        <td>
+                            {{ $entry->beneficiary->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.entry.fields.raffle_numbers') }}
+                        </th>
+                        <td>
+                            @if($entry->raffleNumbers->count())
+                                {{ $entry->raffleNumbers->pluck('number')->implode(', ') }}
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.entry.fields.email') }}
                         </th>
                         <td>

@@ -9,6 +9,15 @@
 
 ## About Laravel
 
+## Local testing (beneficiary donation sandbox)
+
+1. Run migrations: `php artisan migrate`.
+2. Seed permissions (optional for admin rules): `php artisan db:seed --class=SyncPermissionsAndAssignUserSeeder`.
+3. Open a beneficiary page: `/beneficiario/{id}/{slug?}`.
+4. Submit the donation form and confirm the sandbox modal.
+5. Check generated entries and payments in `/admin/entries` and `/admin/payments`.
+6. Configure raffle rules in `/admin/raffle-rules`.
+
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
 - [Simple, fast routing engine](https://laravel.com/docs/routing).

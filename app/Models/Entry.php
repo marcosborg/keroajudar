@@ -26,6 +26,7 @@ class Entry extends Model
     ];
 
     protected $fillable = [
+        'beneficiary_id',
         'raffle_code',
         'email',
         'first_name',
@@ -49,6 +50,12 @@ class Entry extends Model
         'deleted_at',
     ];
 
+    protected $casts = [
+        'amount' => 'decimal:2',
+        'is_company' => 'boolean',
+        'consent_privacy' => 'boolean',
+    ];
+
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
@@ -57,5 +64,15 @@ class Entry extends Model
     public function country()
     {
         return $this->belongsTo(Country::class, 'country_id');
+    }
+
+    public function beneficiary()
+    {
+        return $this->belongsTo(Beneficiary::class, 'beneficiary_id');
+    }
+
+    public function raffleNumbers()
+    {
+        return $this->hasMany(RaffleNumber::class, 'entry_id')->orderBy('number');
     }
 }

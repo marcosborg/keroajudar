@@ -6,6 +6,7 @@ Route::prefix('/')->group(function() {
     Route::get('/', [WebsiteController::class, 'index'])->name('website.home');
     Route::get('donativo', [WebsiteController::class, 'donativo'])->name('website.donativo');
     Route::get('beneficiario/{beneficiary}/{slug?}', [WebsiteController::class, 'beneficiaryDonation'])->name('website.beneficiary.donate');
+    Route::post('beneficiario/{beneficiary}/{slug?}', [WebsiteController::class, 'beneficiaryDonate'])->name('website.beneficiary.donate.store');
     Route::get('quem-somos', [WebsiteController::class, 'quemSomos'])->name('website.quem-somos');
     Route::get('contactos', [WebsiteController::class, 'contactos'])->name('website.contactos');
 });
@@ -62,6 +63,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Prizes
     Route::delete('prizes/destroy', 'PrizesController@massDestroy')->name('prizes.massDestroy');
     Route::resource('prizes', 'PrizesController');
+
+    // Raffle Rules
+    Route::delete('raffle-rules/destroy', 'RaffleRulesController@massDestroy')->name('raffle-rules.massDestroy');
+    Route::resource('raffle-rules', 'RaffleRulesController');
 
     // Winner
     Route::delete('winners/destroy', 'WinnerController@massDestroy')->name('winners.massDestroy');

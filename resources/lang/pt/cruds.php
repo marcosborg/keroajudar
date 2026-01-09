@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 return [
     'userManagement' => [
@@ -73,6 +73,10 @@ return [
             'id_helper'              => ' ',
             'raffle_code'            => 'Código do sorteio',
             'raffle_code_helper'     => ' ',
+            'raffle_numbers'         => 'Numeros do sorteio',
+            'raffle_numbers_helper'  => ' ',
+            'beneficiary'            => 'Beneficiario',
+            'beneficiary_helper'     => ' ',
             'email'                  => 'Email',
             'email_helper'           => ' ',
             'first_name'             => 'Primeiro nome',
@@ -344,5 +348,27 @@ return [
         ],
     ],
 
+    'raffleRule' => [
+        'title'          => 'Regras de sorteio',
+        'title_singular' => 'Regra de sorteio',
+        'fields'         => [
+            'id'                => 'ID',
+            'id_helper'         => ' ',
+            'amount'            => 'Valor base',
+            'amount_helper'     => ' ',
+            'numbers'           => 'Numeros por base',
+            'numbers_helper'    => ' ',
+            'active'            => 'Ativo',
+            'active_helper'     => ' ',
+            'created_at'        => 'Created at',
+            'created_at_helper' => ' ',
+            'updated_at'        => 'Updated at',
+            'updated_at_helper' => ' ',
+            'deleted_at'        => 'Deleted at',
+            'deleted_at_helper' => ' ',
+        ],
+    ],
 ];
+
+
 

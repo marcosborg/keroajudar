@@ -87,6 +87,16 @@
                 </a>
             </li>
         @endcan
+        @can('raffle_rule_access')
+            <li class="c-sidebar-nav-item">
+                <a href="{{ route("admin.raffle-rules.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/raffle-rules") || request()->is("admin/raffle-rules/*") ? "c-active" : "" }}">
+                    <i class="fa-fw fas fa-ticket-alt c-sidebar-nav-icon">
+
+                    </i>
+                    {{ trans('cruds.raffleRule.title') }}
+                </a>
+            </li>
+        @endcan
         @can('winner_access')
             <li class="c-sidebar-nav-item">
                 <a href="{{ route("admin.winners.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/winners") || request()->is("admin/winners/*") ? "c-active" : "" }}">
