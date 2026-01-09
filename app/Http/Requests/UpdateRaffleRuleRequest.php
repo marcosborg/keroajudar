@@ -15,6 +15,11 @@ class UpdateRaffleRuleRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'raffle_game_id' => [
+                'required',
+                'integer',
+                'exists:raffle_games,id',
+            ],
             'amount' => [
                 'required',
                 'numeric',

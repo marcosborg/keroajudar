@@ -68,6 +68,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('raffle-rules/destroy', 'RaffleRulesController@massDestroy')->name('raffle-rules.massDestroy');
     Route::resource('raffle-rules', 'RaffleRulesController');
 
+    // Raffle Games
+    Route::delete('raffle-games/destroy', 'RaffleGamesController@massDestroy')->name('raffle-games.massDestroy');
+    Route::resource('raffle-games', 'RaffleGamesController');
+
     // Winner
     Route::delete('winners/destroy', 'WinnerController@massDestroy')->name('winners.massDestroy');
     Route::resource('winners', 'WinnerController');

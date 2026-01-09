@@ -27,6 +27,7 @@ class Entry extends Model
 
     protected $fillable = [
         'beneficiary_id',
+        'raffle_game_id',
         'raffle_code',
         'email',
         'first_name',
@@ -69,6 +70,11 @@ class Entry extends Model
     public function beneficiary()
     {
         return $this->belongsTo(Beneficiary::class, 'beneficiary_id');
+    }
+
+    public function raffleGame()
+    {
+        return $this->belongsTo(RaffleGame::class, 'raffle_game_id');
     }
 
     public function raffleNumbers()

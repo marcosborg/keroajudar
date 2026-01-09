@@ -97,6 +97,16 @@
                 </a>
             </li>
         @endcan
+        @can('raffle_game_access')
+            <li class="c-sidebar-nav-item">
+                <a href="{{ route("admin.raffle-games.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/raffle-games") || request()->is("admin/raffle-games/*") ? "c-active" : "" }}">
+                    <i class="fa-fw fas fa-gamepad c-sidebar-nav-icon">
+
+                    </i>
+                    {{ trans('cruds.raffleGame.title') }}
+                </a>
+            </li>
+        @endcan
         @can('winner_access')
             <li class="c-sidebar-nav-item">
                 <a href="{{ route("admin.winners.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/winners") || request()->is("admin/winners/*") ? "c-active" : "" }}">

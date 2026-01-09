@@ -13,10 +13,11 @@
 
 1. Run migrations: `php artisan migrate`.
 2. Seed permissions (optional for admin rules): `php artisan db:seed --class=SyncPermissionsAndAssignUserSeeder`.
-3. Open a beneficiary page: `/beneficiario/{id}/{slug?}`.
-4. Submit the donation form and confirm the sandbox modal.
-5. Check generated entries and payments in `/admin/entries` and `/admin/payments`.
-6. Configure raffle rules in `/admin/raffle-rules`.
+3. Create a raffle game in `/admin/raffle-games` and set start/end dates.
+4. Add raffle rules for that game in `/admin/raffle-rules`.
+5. Open a beneficiary page: `/beneficiario/{id}/{slug?}`.
+6. Submit the donation form and confirm the sandbox modal.
+7. Check generated entries and payments in `/admin/entries` and `/admin/payments`.
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 

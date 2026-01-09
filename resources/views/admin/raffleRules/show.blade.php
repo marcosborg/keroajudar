@@ -20,6 +20,10 @@
                         <td>{{ $raffleRule->id }}</td>
                     </tr>
                     <tr>
+                        <th>{{ trans('cruds.raffleRule.fields.raffle_game') }}</th>
+                        <td>{{ $raffleRule->raffleGame->name ?? '' }}</td>
+                    </tr>
+                    <tr>
                         <th>{{ trans('cruds.raffleRule.fields.amount') }}</th>
                         <td>{{ $raffleRule->amount }}</td>
                     </tr>

@@ -86,6 +86,11 @@ class SyncPermissionsAndAssignUserSeeder extends Seeder
             ['id' => 72, 'title' => 'raffle_rule_show'],
             ['id' => 73, 'title' => 'raffle_rule_delete'],
             ['id' => 74, 'title' => 'raffle_rule_access'],
+            ['id' => 75, 'title' => 'raffle_game_create'],
+            ['id' => 76, 'title' => 'raffle_game_edit'],
+            ['id' => 77, 'title' => 'raffle_game_show'],
+            ['id' => 78, 'title' => 'raffle_game_delete'],
+            ['id' => 79, 'title' => 'raffle_game_access'],
         ];
 
         foreach ($permissions as $perm) {

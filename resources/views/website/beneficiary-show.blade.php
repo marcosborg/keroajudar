@@ -48,11 +48,16 @@
                             <p class="text-uppercase text-success fw-semibold mb-1">Donativo confirmado</p>
                             <h3 class="mb-1">Obrigado pelo seu apoio!</h3>
                             <p class="text-muted mb-0">Transacao: {{ session('donation.transaction') }}</p>
+                            @if(!session('donation.game_active'))
+                                <p class="text-muted mb-0">Nao ha sorteio ativo no momento. O donativo foi registado sem numeros.</p>
+                            @endif
                         </div>
-                        <div class="ticket-code">
-                            <span class="ticket-label">Codigo do sorteio</span>
-                            <span class="ticket-number">{{ session('donation.numbers.0') }}</span>
-                        </div>
+                        @if(session('donation.game_active'))
+                            <div class="ticket-code">
+                                <span class="ticket-label">Codigo do sorteio</span>
+                                <span class="ticket-number">{{ session('donation.numbers.0') }}</span>
+                            </div>
+                        @endif
                     </div>
                     @if(count(session('donation.numbers', [])) > 1)
                         <div class="ticket-numbers">
@@ -147,6 +152,11 @@
                     <div class="donation-card" id="donationForm">
                         <h3>Fazer Donativo</h3>
                         <p class="text-muted">Escolha um valor e receba numeros para o sorteio.</p>
+                        @if(!$activeGame)
+                            <div class="alert alert-light border">
+                                Nao ha sorteio ativo no momento. O seu donativo sera registado sem numeros.
+                            </div>
+                        @endif
                         @if($errors->any())
                             <div class="alert alert-danger">
                                 <ul class="mb-0">
@@ -214,20 +224,54 @@
                         </form>
                     </div>
 
-                    <div class="raffle-card">
-                        <h4>Jogo/Sorteio</h4>
-                        <p class="text-muted">Cada donativo gera numeros de participacao. Guarde-os para o sorteio.</p>
-                        <ul>
-                            @forelse($rules as $rule)
-                                <li>{{ number_format($rule->amount, 2, ',', '.') }} &euro; =&gt; {{ $rule->numbers }} numero(s)</li>
-                            @empty
-                                <li>Regra base: 1 numero por donativo.</li>
-                            @endforelse
-                        </ul>
-                        <div class="raffle-highlight">
-                            <span>Intervalo</span>
-                            <strong>10000 - 999999</strong>
+                    <div class="raffle-card" id="raffleCard"
+                         @if($activeGame)
+                             data-start="{{ $activeGame->starts_at?->timestamp }}"
+                             data-end="{{ $activeGame->ends_at?->timestamp }}"
+                         @endif>
+                        <div class="raffle-header">
+                            <h4>Jogo atual</h4>
+                            @if($activeGame)
+                                <span class="badge bg-success">Ativo</span>
+                            @else
+                                <span class="badge bg-secondary">Encerrado</span>
+                            @endif
                         </div>
+                        @if($activeGame)
+                            <div class="raffle-main">
+                                <h5 class="mb-1">{{ $activeGame->name }}</h5>
+                                @if($activeGame->prize)
+                                    <p class="text-muted mb-0">Premio: {{ $activeGame->prize->name }}</p>
+                                @endif
+                                <p class="text-muted mb-0">De {{ $activeGame->starts_at?->format('d/m/Y') }} ate {{ $activeGame->ends_at?->format('d/m/Y') }}</p>
+                            </div>
+                            <div class="raffle-progress">
+                                <div class="raffle-progress__bar">
+                                    <span id="raffleProgress"></span>
+                                </div>
+                                <div class="raffle-progress__meta">
+                                    <span>Progresso</span>
+                                    <strong id="raffleProgressLabel">0%</strong>
+                                </div>
+                            </div>
+                            <div class="raffle-countdown" id="raffleCountdown">A terminar em...</div>
+                            <div class="raffle-rules">
+                                <p class="text-muted mb-2">Regras do jogo</p>
+                                <ul>
+                                    @forelse($rules as $rule)
+                                        <li>{{ number_format($rule->amount, 2, ',', '.') }} &euro; =&gt; {{ $rule->numbers }} numero(s)</li>
+                                    @empty
+                                        <li>Regra base: 1 numero por donativo.</li>
+                                    @endforelse
+                                </ul>
+                            </div>
+                            <div class="raffle-highlight">
+                                <span>Intervalo</span>
+                                <strong>10000 - 999999</strong>
+                            </div>
+                        @else
+                            <p class="text-muted mb-0">Nao ha sorteio ativo no momento. Pode doar e apoiar a causa.</p>
+                        @endif
                     </div>
 
                     <div class="contact-card">
@@ -319,6 +363,44 @@
         confirmBtn.addEventListener('click', () => form.submit());
 
         syncAmount(amountInput.value || amountRange.value);
+
+        const raffleCard = document.getElementById('raffleCard');
+        const progressBar = document.getElementById('raffleProgress');
+        const progressLabel = document.getElementById('raffleProgressLabel');
+        const countdown = document.getElementById('raffleCountdown');
+
+        if (raffleCard && raffleCard.dataset.start && raffleCard.dataset.end) {
+            const start = Number(raffleCard.dataset.start) * 1000;
+            const end = Number(raffleCard.dataset.end) * 1000;
+
+            const updateCountdown = () => {
+                const now = Date.now();
+                const total = Math.max(1, end - start);
+                const elapsed = Math.min(total, Math.max(0, now - start));
+                const percent = Math.round((elapsed / total) * 100);
+                if (progressBar) {
+                    progressBar.style.width = percent + '%';
+                }
+                if (progressLabel) {
+                    progressLabel.textContent = percent + '%';
+                }
+
+                const remaining = Math.max(0, end - now);
+                if (countdown) {
+                    if (remaining <= 0) {
+                        countdown.textContent = 'Jogo encerrado';
+                        return;
+                    }
+                    const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
+                    const minutes = Math.floor((remaining / (1000 * 60)) % 60);
+                    countdown.textContent = 'Termina em ' + days + 'd ' + hours + 'h ' + minutes + 'm';
+                }
+            };
+
+            updateCountdown();
+            setInterval(updateCountdown, 60000);
+        }
     })();
 </script>
 @endpush
@@ -555,6 +637,43 @@
     }
     .raffle-card ul {
         padding-left: 18px;
+    }
+    .raffle-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+    .raffle-main {
+        margin-bottom: 12px;
+    }
+    .raffle-progress {
+        margin: 12px 0;
+    }
+    .raffle-progress__bar {
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 999px;
+        overflow: hidden;
+    }
+    .raffle-progress__bar span {
+        display: block;
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #198754, #20c997);
+    }
+    .raffle-progress__meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-top: 6px;
+    }
+    .raffle-countdown {
+        font-weight: 600;
+        color: #198754;
+        margin-bottom: 12px;
     }
     .raffle-highlight {
         margin-top: 16px;

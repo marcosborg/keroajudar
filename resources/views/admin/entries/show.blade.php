@@ -41,6 +41,14 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.entry.fields.raffle_game') }}
+                        </th>
+                        <td>
+                            {{ $entry->raffleGame->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.entry.fields.raffle_numbers') }}
                         </th>
                         <td>

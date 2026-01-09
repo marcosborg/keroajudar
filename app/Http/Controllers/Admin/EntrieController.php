@@ -18,7 +18,7 @@ class EntrieController extends Controller
     {
         abort_if(Gate::denies('entry_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $entries = Entry::with(['country', 'beneficiary', 'raffleNumbers'])->get();
+        $entries = Entry::with(['country', 'beneficiary', 'raffleNumbers', 'raffleGame'])->get();
 
         return view('admin.entries.index', compact('entries'));
     }
@@ -45,7 +45,7 @@ class EntrieController extends Controller
 
         $countries = Country::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $entry->load(['country', 'beneficiary', 'raffleNumbers']);
+        $entry->load(['country', 'beneficiary', 'raffleNumbers', 'raffleGame']);
 
         return view('admin.entries.edit', compact('countries', 'entry'));
     }

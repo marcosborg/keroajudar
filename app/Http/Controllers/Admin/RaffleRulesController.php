@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyRaffleRuleRequest;
 use App\Http\Requests\StoreRaffleRuleRequest;
 use App\Http\Requests\UpdateRaffleRuleRequest;
+use App\Models\RaffleGame;
 use App\Models\RaffleRule;
 use Gate;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class RaffleRulesController extends Controller
     {
         abort_if(Gate::denies('raffle_rule_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $raffleRules = RaffleRule::orderBy('amount')->get();
+        $raffleRules = RaffleRule::with('raffleGame')->orderBy('amount')->get();
 
         return view('admin.raffleRules.index', compact('raffleRules'));
     }
@@ -26,7 +27,9 @@ class RaffleRulesController extends Controller
     {
         abort_if(Gate::denies('raffle_rule_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.raffleRules.create');
+        $raffleGames = RaffleGame::orderBy('starts_at', 'desc')->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        return view('admin.raffleRules.create', compact('raffleGames'));
     }
 
     public function store(StoreRaffleRuleRequest $request)
@@ -40,7 +43,9 @@ class RaffleRulesController extends Controller
     {
         abort_if(Gate::denies('raffle_rule_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.raffleRules.edit', compact('raffleRule'));
+        $raffleGames = RaffleGame::orderBy('starts_at', 'desc')->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        return view('admin.raffleRules.edit', compact('raffleRule', 'raffleGames'));
     }
 
     public function update(UpdateRaffleRuleRequest $request, RaffleRule $raffleRule)
@@ -53,6 +58,8 @@ class RaffleRulesController extends Controller
     public function show(RaffleRule $raffleRule)
     {
         abort_if(Gate::denies('raffle_rule_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $raffleRule->load('raffleGame');
 
         return view('admin.raffleRules.show', compact('raffleRule'));
     }

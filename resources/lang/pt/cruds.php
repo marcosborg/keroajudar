@@ -75,6 +75,8 @@ return [
             'raffle_code_helper'     => ' ',
             'raffle_numbers'         => 'Numeros do sorteio',
             'raffle_numbers_helper'  => ' ',
+            'raffle_game'           => 'Jogo',
+            'raffle_game_helper'    => ' ',
             'beneficiary'            => 'Beneficiario',
             'beneficiary_helper'     => ' ',
             'email'                  => 'Email',
@@ -348,12 +350,14 @@ return [
         ],
     ],
 
-    'raffleRule' => [
+        'raffleRule' => [
         'title'          => 'Regras de sorteio',
         'title_singular' => 'Regra de sorteio',
         'fields'         => [
             'id'                => 'ID',
             'id_helper'         => ' ',
+            'raffle_game'       => 'Jogo',
+            'raffle_game_helper'=> ' ',
             'amount'            => 'Valor base',
             'amount_helper'     => ' ',
             'numbers'           => 'Numeros por base',
@@ -368,7 +372,37 @@ return [
             'deleted_at_helper' => ' ',
         ],
     ],
-];
+
+    'raffleGame' => [
+        'title'          => 'Jogos',
+        'title_singular' => 'Jogo',
+        'fields'         => [
+            'id'                => 'ID',
+            'id_helper'         => ' ',
+            'name'              => 'Nome',
+            'name_helper'       => ' ',
+            'prize'             => 'Premio',
+            'prize_helper'      => ' ',
+            'starts_at'         => 'Inicio',
+            'starts_at_helper'  => ' ',
+            'ends_at'           => 'Fim',
+            'ends_at_helper'    => ' ',
+            'active'            => 'Ativo',
+            'active_helper'     => ' ',
+            'description'       => 'Descricao',
+            'description_helper'=> ' ',
+            'created_at'        => 'Created at',
+            'created_at_helper' => ' ',
+            'updated_at'        => 'Updated at',
+            'updated_at_helper' => ' ',
+            'deleted_at'        => 'Deleted at',
+            'deleted_at_helper' => ' ',
+        ],
+    ],];
+
+
+
+
 
 
 

@@ -1,58 +1,60 @@
 @extends('layouts.admin')
 @section('content')
-@can('raffle_rule_create')
+@can('raffle_game_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.raffle-rules.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.raffleRule.title_singular') }}
+            <a class="btn btn-success" href="{{ route('admin.raffle-games.create') }}">
+                {{ trans('global.add') }} {{ trans('cruds.raffleGame.title_singular') }}
             </a>
         </div>
     </div>
 @endcan
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.raffleRule.title_singular') }} {{ trans('global.list') }}
+        {{ trans('cruds.raffleGame.title_singular') }} {{ trans('global.list') }}
     </div>
 
     <div class="card-body">
         <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-RaffleRule">
+            <table class=" table table-bordered table-striped table-hover datatable datatable-RaffleGame">
                 <thead>
                     <tr>
                         <th width="10"></th>
-                        <th>{{ trans('cruds.raffleRule.fields.id') }}</th>
-                        <th>{{ trans('cruds.raffleRule.fields.raffle_game') }}</th>
-                        <th>{{ trans('cruds.raffleRule.fields.amount') }}</th>
-                        <th>{{ trans('cruds.raffleRule.fields.numbers') }}</th>
-                        <th>{{ trans('cruds.raffleRule.fields.active') }}</th>
+                        <th>{{ trans('cruds.raffleGame.fields.id') }}</th>
+                        <th>{{ trans('cruds.raffleGame.fields.name') }}</th>
+                        <th>{{ trans('cruds.raffleGame.fields.prize') }}</th>
+                        <th>{{ trans('cruds.raffleGame.fields.starts_at') }}</th>
+                        <th>{{ trans('cruds.raffleGame.fields.ends_at') }}</th>
+                        <th>{{ trans('cruds.raffleGame.fields.active') }}</th>
                         <th>&nbsp;</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($raffleRules as $key => $raffleRule)
-                        <tr data-entry-id="{{ $raffleRule->id }}">
+                    @foreach($raffleGames as $key => $raffleGame)
+                        <tr data-entry-id="{{ $raffleGame->id }}">
                             <td></td>
-                            <td>{{ $raffleRule->id ?? '' }}</td>
-                            <td>{{ $raffleRule->raffleGame->name ?? '' }}</td>
-                            <td>{{ $raffleRule->amount ?? '' }}</td>
-                            <td>{{ $raffleRule->numbers ?? '' }}</td>
+                            <td>{{ $raffleGame->id ?? '' }}</td>
+                            <td>{{ $raffleGame->name ?? '' }}</td>
+                            <td>{{ $raffleGame->prize->name ?? '' }}</td>
+                            <td>{{ $raffleGame->starts_at ?? '' }}</td>
+                            <td>{{ $raffleGame->ends_at ?? '' }}</td>
                             <td>
-                                <span style="display:none">{{ $raffleRule->active ?? '' }}</span>
-                                <input type="checkbox" disabled="disabled" {{ $raffleRule->active ? 'checked' : '' }}>
+                                <span style="display:none">{{ $raffleGame->active ?? '' }}</span>
+                                <input type="checkbox" disabled="disabled" {{ $raffleGame->active ? 'checked' : '' }}>
                             </td>
                             <td>
-                                @can('raffle_rule_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.raffle-rules.show', $raffleRule->id) }}">
+                                @can('raffle_game_show')
+                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.raffle-games.show', $raffleGame->id) }}">
                                         {{ trans('global.view') }}
                                     </a>
                                 @endcan
-                                @can('raffle_rule_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.raffle-rules.edit', $raffleRule->id) }}">
+                                @can('raffle_game_edit')
+                                    <a class="btn btn-xs btn-info" href="{{ route('admin.raffle-games.edit', $raffleGame->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
                                 @endcan
-                                @can('raffle_rule_delete')
-                                    <form action="{{ route('admin.raffle-rules.destroy', $raffleRule->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                @can('raffle_game_delete')
+                                    <form action="{{ route('admin.raffle-games.destroy', $raffleGame->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
@@ -73,11 +75,11 @@
 <script>
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-@can('raffle_rule_delete')
+@can('raffle_game_delete')
   let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
-    url: "{{ route('admin.raffle-rules.massDestroy') }}",
+    url: "{{ route('admin.raffle-games.massDestroy') }}",
     className: 'btn-danger',
     action: function (e, dt, node, config) {
       var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
@@ -105,10 +107,10 @@
 
   $.extend(true, $.fn.dataTable.defaults, {
     orderCellsTop: true,
-    order: [[ 1, 'asc' ]],
+    order: [[ 1, 'desc' ]],
     pageLength: 100,
   });
-  let table = $('.datatable-RaffleRule:not(.ajaxTable)').DataTable({ buttons: dtButtons })
+  let table = $('.datatable-RaffleGame:not(.ajaxTable)').DataTable({ buttons: dtButtons })
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();

@@ -7,6 +7,7 @@ use App\Models\Beneficiary;
 use App\Models\BeneficiaryCategory;
 use App\Models\Entry;
 use App\Models\Payment;
+use App\Models\RaffleGame;
 use App\Models\RaffleNumber;
 use App\Models\RaffleRule;
 use Illuminate\Http\Request;
@@ -43,10 +44,8 @@ class WebsiteController extends Controller
 
         $beneficiary->load(['category', 'media']);
 
-        $rules = RaffleRule::query()
-            ->where('active', true)
-            ->orderBy('amount')
-            ->get();
+        $activeGame = $this->resolveActiveGame();
+        $rules = $activeGame ? $activeGame->rules : collect();
 
         $entryQuery = Entry::query()->where('beneficiary_id', $beneficiary->id);
         $stats = [
@@ -58,6 +57,7 @@ class WebsiteController extends Controller
         return view('website.beneficiary-show', [
             'beneficiary' => $beneficiary,
             'shareUrl' => route('website.beneficiary.donate', ['beneficiary' => $beneficiary->id, 'slug' => $expectedSlug]),
+            'activeGame' => $activeGame,
             'rules' => $rules,
             'stats' => $stats,
         ]);
@@ -68,11 +68,19 @@ class WebsiteController extends Controller
         abort_unless($beneficiary->active, 404);
 
         $amount = (float) $request->input('amount');
-        $numbersCount = $this->resolveRaffleNumbersCount($amount);
+        $activeGame = $this->resolveActiveGame();
+        $numbers = [];
+        $numbersCount = 0;
+
+        if ($activeGame) {
+            $numbersCount = $this->resolveRaffleNumbersCount($amount, $activeGame);
+            $numbers = $this->generateRaffleNumbers($numbersCount);
+        }
 
         $entry = Entry::create([
             'beneficiary_id' => $beneficiary->id,
-            'raffle_code' => 'pending',
+            'raffle_game_id' => $activeGame?->id,
+            'raffle_code' => $numbers ? (string) $numbers[0] : 'no-game',
             'email' => $request->input('email'),
             'first_name' => $request->input('first_name'),
             'last_name' => $request->input('last_name'),
@@ -92,15 +100,13 @@ class WebsiteController extends Controller
             'user_agent' => substr((string) $request->userAgent(), 0, 255),
         ]);
 
-        $numbers = $this->generateRaffleNumbers($numbersCount);
-        $entry->raffle_code = (string) $numbers[0];
-        $entry->save();
-
-        foreach ($numbers as $number) {
-            RaffleNumber::create([
-                'entry_id' => $entry->id,
-                'number' => $number,
-            ]);
+        if ($numbers) {
+            foreach ($numbers as $number) {
+                RaffleNumber::create([
+                    'entry_id' => $entry->id,
+                    'number' => $number,
+                ]);
+            }
         }
 
         $payment = Payment::create([
@@ -116,6 +122,7 @@ class WebsiteController extends Controller
                 'sandbox' => true,
                 'note' => 'Pagamento simulado',
                 'numbers' => $numbers,
+                'raffle_game_id' => $activeGame?->id,
             ], JSON_UNESCAPED_SLASHES),
         ]);
 
@@ -126,12 +133,14 @@ class WebsiteController extends Controller
                 'amount' => $amount,
                 'numbers' => $numbers,
                 'transaction' => $payment->transaction,
+                'game_active' => (bool) $activeGame,
             ]);
     }
 
-    private function resolveRaffleNumbersCount(float $amount): int
+    private function resolveRaffleNumbersCount(float $amount, RaffleGame $game): int
     {
         $rule = RaffleRule::query()
+            ->where('raffle_game_id', $game->id)
             ->where('active', true)
             ->where('amount', '<=', $amount)
             ->orderByDesc('amount')
@@ -145,6 +154,21 @@ class WebsiteController extends Controller
         $count = $units * (int) $rule->numbers;
 
         return max(1, $count);
+    }
+
+    private function resolveActiveGame(): ?RaffleGame
+    {
+        $now = now();
+
+        return RaffleGame::query()
+            ->where('active', true)
+            ->where('starts_at', '<=', $now)
+            ->where('ends_at', '>=', $now)
+            ->with(['prize', 'rules' => function ($query) {
+                $query->where('active', true)->orderBy('amount');
+            }])
+            ->orderByDesc('starts_at')
+            ->first();
     }
 
     private function generateRaffleNumbers(int $count): array

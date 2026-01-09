@@ -11,6 +11,18 @@
             @method('PUT')
             @csrf
             <div class="form-group">
+                <label class="required" for="raffle_game_id">{{ trans('cruds.raffleRule.fields.raffle_game') }}</label>
+                <select class="form-control {{ $errors->has('raffle_game_id') ? 'is-invalid' : '' }}" name="raffle_game_id" id="raffle_game_id" required>
+                    @foreach($raffleGames as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('raffle_game_id') ? old('raffle_game_id') : $raffleRule->raffle_game_id) == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('raffle_game_id'))
+                    <span class="text-danger">{{ $errors->first('raffle_game_id') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.raffleRule.fields.raffle_game_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label class="required" for="amount">{{ trans('cruds.raffleRule.fields.amount') }}</label>
                 <input class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}" type="number" name="amount" id="amount" value="{{ old('amount', $raffleRule->amount) }}" step="0.01" min="0.01" required>
                 @if($errors->has('amount'))
