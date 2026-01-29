@@ -73,6 +73,22 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.beneficiary.fields.commercial_certificate_code') }}
+                        </th>
+                        <td>
+                            {{ $beneficiary->commercial_certificate_code }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.beneficiary.fields.iban') }}
+                        </th>
+                        <td>
+                            {{ $beneficiary->iban }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.beneficiary.fields.contact_email') }}
                         </th>
                         <td>
@@ -103,6 +119,14 @@
                         </th>
                         <td>
                             {{ $beneficiary->address }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.beneficiary.fields.postal_code') }}
+                        </th>
+                        <td>
+                            {{ $beneficiary->postal_code }}
                         </td>
                     </tr>
                     <tr>

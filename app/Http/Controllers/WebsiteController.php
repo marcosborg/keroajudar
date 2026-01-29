@@ -11,6 +11,7 @@ use App\Models\RaffleGame;
 use App\Models\RaffleNumber;
 use App\Models\RaffleRule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class WebsiteController extends Controller
@@ -69,72 +70,78 @@ class WebsiteController extends Controller
 
         $amount = (float) $request->input('amount');
         $activeGame = $this->resolveActiveGame();
-        $numbers = [];
-        $numbersCount = 0;
 
-        if ($activeGame) {
-            $numbersCount = $this->resolveRaffleNumbersCount($amount, $activeGame);
-            $numbers = $this->generateRaffleNumbers($numbersCount);
-        }
+        return DB::transaction(function () use ($request, $beneficiary, $amount, $activeGame) {
+            $numbers = [];
+            $numbersCount = 0;
 
-        $entry = Entry::create([
-            'beneficiary_id' => $beneficiary->id,
-            'raffle_game_id' => $activeGame?->id,
-            'raffle_code' => $numbers ? (string) $numbers[0] : 'no-game',
-            'email' => $request->input('email'),
-            'first_name' => $request->input('first_name'),
-            'last_name' => $request->input('last_name'),
-            'phone' => $request->input('phone'),
-            'amount' => $amount,
-            'is_company' => $request->boolean('is_company'),
-            'nif' => $request->input('nif'),
-            'nipc' => $request->input('nipc'),
-            'address' => $request->input('address'),
-            'postal_code' => $request->input('postal_code'),
-            'city' => $request->input('city'),
-            'country_id' => $request->input('country_id'),
-            'consent_privacy' => $request->boolean('consent_privacy'),
-            'contact_via' => null,
-            'source_page' => $request->fullUrl(),
-            'client_ip' => $request->ip(),
-            'user_agent' => substr((string) $request->userAgent(), 0, 255),
-        ]);
+            if ($activeGame) {
+                RaffleGame::query()->whereKey($activeGame->id)->lockForUpdate()->first();
 
-        if ($numbers) {
-            foreach ($numbers as $number) {
-                RaffleNumber::create([
-                    'entry_id' => $entry->id,
-                    'number' => $number,
-                ]);
+                $numbersCount = $this->resolveRaffleNumbersCount($amount, $activeGame);
+                $numbers = $this->generateRaffleNumbers($numbersCount, $activeGame);
             }
-        }
 
-        $payment = Payment::create([
-            'entry_id' => $entry->id,
-            'provider' => 'sandbox',
-            'transaction' => 'SBX-' . Str::upper(Str::random(10)),
-            'amount' => $amount,
-            'currency' => 'EUR',
-            'status' => 'confirmed',
-            'method' => 'cartao',
-            'paid_at' => now(),
-            'raw_response' => json_encode([
-                'sandbox' => true,
-                'note' => 'Pagamento simulado',
-                'numbers' => $numbers,
+            $entry = Entry::create([
+                'beneficiary_id' => $beneficiary->id,
                 'raffle_game_id' => $activeGame?->id,
-            ], JSON_UNESCAPED_SLASHES),
-        ]);
-
-        return redirect()
-            ->route('website.beneficiary.donate', ['beneficiary' => $beneficiary->id, 'slug' => Str::slug($beneficiary->name)])
-            ->with('donation', [
-                'entry_id' => $entry->id,
+                'raffle_code' => $numbers ? (string) $numbers[0] : 'no-game',
+                'email' => $request->input('email'),
+                'first_name' => $request->input('first_name'),
+                'last_name' => $request->input('last_name'),
+                'phone' => $request->input('phone'),
                 'amount' => $amount,
-                'numbers' => $numbers,
-                'transaction' => $payment->transaction,
-                'game_active' => (bool) $activeGame,
+                'is_company' => $request->boolean('is_company'),
+                'nif' => $request->input('nif'),
+                'nipc' => $request->input('nipc'),
+                'address' => $request->input('address'),
+                'postal_code' => $request->input('postal_code'),
+                'city' => $request->input('city'),
+                'country_id' => $request->input('country_id'),
+                'consent_privacy' => $request->boolean('consent_privacy'),
+                'contact_via' => null,
+                'source_page' => $request->fullUrl(),
+                'client_ip' => $request->ip(),
+                'user_agent' => substr((string) $request->userAgent(), 0, 255),
             ]);
+
+            if ($numbers) {
+                foreach ($numbers as $number) {
+                    RaffleNumber::create([
+                        'entry_id' => $entry->id,
+                        'raffle_game_id' => $activeGame->id,
+                        'number' => $number,
+                    ]);
+                }
+            }
+
+            $payment = Payment::create([
+                'entry_id' => $entry->id,
+                'provider' => 'sandbox',
+                'transaction' => 'SBX-' . Str::upper(Str::random(10)),
+                'amount' => $amount,
+                'currency' => 'EUR',
+                'status' => 'confirmed',
+                'method' => 'cartao',
+                'paid_at' => now(),
+                'raw_response' => json_encode([
+                    'sandbox' => true,
+                    'note' => 'Pagamento simulado',
+                    'numbers' => $numbers,
+                    'raffle_game_id' => $activeGame?->id,
+                ], JSON_UNESCAPED_SLASHES),
+            ]);
+
+            return redirect()
+                ->route('website.beneficiary.donate', ['beneficiary' => $beneficiary->id, 'slug' => Str::slug($beneficiary->name)])
+                ->with('donation', [
+                    'entry_id' => $entry->id,
+                    'amount' => $amount,
+                    'numbers' => $numbers,
+                    'transaction' => $payment->transaction,
+                    'game_active' => (bool) $activeGame,
+                ]);
+        });
     }
 
     private function resolveRaffleNumbersCount(float $amount, RaffleGame $game): int
@@ -171,22 +178,16 @@ class WebsiteController extends Controller
             ->first();
     }
 
-    private function generateRaffleNumbers(int $count): array
+    private function generateRaffleNumbers(int $count, RaffleGame $game): array
     {
-        $numbers = [];
+        $max = RaffleNumber::query()
+            ->where('raffle_game_id', $game->id)
+            ->max('number');
 
-        while (count($numbers) < $count) {
-            $candidate = random_int(10000, 999999);
-            if (in_array($candidate, $numbers, true)) {
-                continue;
-            }
-            if (RaffleNumber::where('number', $candidate)->exists()) {
-                continue;
-            }
-            $numbers[] = $candidate;
-        }
+        $start = $max === null ? 0 : ((int) $max + 1);
+        $end = $start + max(0, $count - 1);
 
-        return $numbers;
+        return $count > 0 ? range($start, $end) : [];
     }
 
     public function quemSomos()

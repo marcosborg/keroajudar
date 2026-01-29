@@ -64,6 +64,26 @@
                 <span class="help-block">{{ trans('cruds.beneficiary.fields.vat_number_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="commercial_certificate_code">{{ trans('cruds.beneficiary.fields.commercial_certificate_code') }}</label>
+                <input class="form-control {{ $errors->has('commercial_certificate_code') ? 'is-invalid' : '' }}" type="text" name="commercial_certificate_code" id="commercial_certificate_code" value="{{ old('commercial_certificate_code', '') }}">
+                @if($errors->has('commercial_certificate_code'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('commercial_certificate_code') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.beneficiary.fields.commercial_certificate_code_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="iban">{{ trans('cruds.beneficiary.fields.iban') }}</label>
+                <input class="form-control {{ $errors->has('iban') ? 'is-invalid' : '' }}" type="text" name="iban" id="iban" value="{{ old('iban', '') }}">
+                @if($errors->has('iban'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('iban') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.beneficiary.fields.iban_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label for="contact_email">{{ trans('cruds.beneficiary.fields.contact_email') }}</label>
                 <input class="form-control {{ $errors->has('contact_email') ? 'is-invalid' : '' }}" type="email" name="contact_email" id="contact_email" value="{{ old('contact_email', '') }}">
                 @if($errors->has('contact_email'))
@@ -122,6 +142,16 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.beneficiary.fields.address_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="postal_code">{{ trans('cruds.beneficiary.fields.postal_code') }}</label>
+                <input class="form-control {{ $errors->has('postal_code') ? 'is-invalid' : '' }}" type="text" name="postal_code" id="postal_code" value="{{ old('postal_code', '') }}">
+                @if($errors->has('postal_code'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('postal_code') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.beneficiary.fields.postal_code_helper') }}</span>
             </div>
             <div class="form-group">
                 <label for="city">{{ trans('cruds.beneficiary.fields.city') }}</label>

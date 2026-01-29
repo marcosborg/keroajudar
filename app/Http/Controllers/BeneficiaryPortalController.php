@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 class BeneficiaryPortalController extends Controller
 {
@@ -29,10 +30,14 @@ class BeneficiaryPortalController extends Controller
 
     public function register(Request $request)
     {
-        $data = $request->validate([
+        $validator = Validator::make($request->all(), [
             'beneficiary_category_id' => ['required', 'exists:beneficiary_categories,id'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:beneficiaries,email'],
+            'vat_number' => ['required', 'string', 'max:64'],
+            'commercial_certificate_code' => ['required', 'string', 'max:20'],
+            'iban' => ['required', 'string', 'max:64'],
+            'postal_code' => ['required', 'string', 'max:16'],
             'contact_phone' => ['nullable', 'string', 'max:50'],
             'website' => ['nullable', 'string', 'max:255'],
             'city' => ['nullable', 'string', 'max:255'],
@@ -40,11 +45,39 @@ class BeneficiaryPortalController extends Controller
             'password' => ['required', 'confirmed', 'min:8'],
         ]);
 
+        $validator->after(function ($validator) use ($request) {
+            $vat = preg_replace('/\\D+/', '', (string) $request->input('vat_number'));
+            if ($vat === '' || strlen($vat) !== 9) {
+                $validator->errors()->add('vat_number', 'O NIPC deve ter 9 dígitos.');
+            }
+
+            $cert = trim((string) $request->input('commercial_certificate_code'));
+            if ($cert !== '' && !preg_match('/^\\d{4}-\\d{4}-\\d{4}$/', $cert)) {
+                $validator->errors()->add('commercial_certificate_code', 'O código deve estar no formato 0000-0000-0000.');
+            }
+
+            $postal = trim((string) $request->input('postal_code'));
+            if ($postal !== '' && !preg_match('/^\\d{4}-\\d{3}$/', $postal)) {
+                $validator->errors()->add('postal_code', 'O código postal deve estar no formato 0000-000.');
+            }
+
+            $iban = strtoupper(preg_replace('/\\s+/', '', (string) $request->input('iban')));
+            if ($iban === '' || !preg_match('/^[A-Z]{2}\\d{2}[A-Z0-9]{11,30}$/', $iban)) {
+                $validator->errors()->add('iban', 'O IBAN parece inválido.');
+            }
+        });
+
+        $data = $validator->validate();
+
         $beneficiary = Beneficiary::create([
             'beneficiary_category_id' => $data['beneficiary_category_id'],
             'name' => $data['name'],
             'email' => $data['email'],
             'contact_email' => $data['email'],
+            'vat_number' => preg_replace('/\\D+/', '', (string) $data['vat_number']),
+            'commercial_certificate_code' => trim((string) $data['commercial_certificate_code']),
+            'iban' => strtoupper(preg_replace('/\\s+/', '', (string) $data['iban'])),
+            'postal_code' => trim((string) $data['postal_code']),
             'contact_phone' => $data['contact_phone'] ?? null,
             'website' => $data['website'] ?? null,
             'city' => $data['city'] ?? null,
@@ -113,16 +146,19 @@ class BeneficiaryPortalController extends Controller
         /** @var Beneficiary $beneficiary */
         $beneficiary = Auth::guard('beneficiary')->user();
 
-        $data = $request->validate([
+        $validator = Validator::make($request->all(), [
             'beneficiary_category_id' => ['required', 'exists:beneficiary_categories,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'vat_number' => ['nullable', 'string', 'max:255'],
+            'vat_number' => ['required', 'string', 'max:64'],
+            'commercial_certificate_code' => ['required', 'string', 'max:20'],
+            'iban' => ['required', 'string', 'max:64'],
             'contact_email' => ['nullable', 'email', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('beneficiaries', 'email')->ignore($beneficiary->id)],
             'contact_phone' => ['nullable', 'string', 'max:50'],
             'website' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:255'],
+            'postal_code' => ['required', 'string', 'max:16'],
             'city' => ['nullable', 'string', 'max:255'],
             'country' => ['nullable', 'string', 'max:255'],
             'about' => ['nullable', 'string'],
@@ -130,6 +166,34 @@ class BeneficiaryPortalController extends Controller
             'photo' => ['nullable', 'image', 'max:5120'],
             'logo_square' => ['nullable', 'image', 'max:5120'],
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            $vat = preg_replace('/\\D+/', '', (string) $request->input('vat_number'));
+            if ($vat === '' || strlen($vat) !== 9) {
+                $validator->errors()->add('vat_number', 'O NIPC deve ter 9 dígitos.');
+            }
+
+            $cert = trim((string) $request->input('commercial_certificate_code'));
+            if ($cert !== '' && !preg_match('/^\\d{4}-\\d{4}-\\d{4}$/', $cert)) {
+                $validator->errors()->add('commercial_certificate_code', 'O código deve estar no formato 0000-0000-0000.');
+            }
+
+            $postal = trim((string) $request->input('postal_code'));
+            if ($postal !== '' && !preg_match('/^\\d{4}-\\d{3}$/', $postal)) {
+                $validator->errors()->add('postal_code', 'O código postal deve estar no formato 0000-000.');
+            }
+
+            $iban = strtoupper(preg_replace('/\\s+/', '', (string) $request->input('iban')));
+            if ($iban === '' || !preg_match('/^[A-Z]{2}\\d{2}[A-Z0-9]{11,30}$/', $iban)) {
+                $validator->errors()->add('iban', 'O IBAN parece inválido.');
+            }
+        });
+
+        $data = $validator->validate();
+        $data['vat_number'] = preg_replace('/\\D+/', '', (string) $data['vat_number']);
+        $data['commercial_certificate_code'] = trim((string) $data['commercial_certificate_code']);
+        $data['iban'] = strtoupper(preg_replace('/\\s+/', '', (string) $data['iban']));
+        $data['postal_code'] = trim((string) $data['postal_code']);
 
         $beneficiary->fill($data);
         if (!empty($data['password'])) {

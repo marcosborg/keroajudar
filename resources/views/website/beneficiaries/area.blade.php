@@ -94,8 +94,16 @@
                                 <input type="email" class="form-control" name="contact_email" value="{{ old('contact_email', $beneficiary->contact_email) }}">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">NIF / VAT</label>
-                                <input type="text" class="form-control" name="vat_number" value="{{ old('vat_number', $beneficiary->vat_number) }}">
+                                <label class="form-label">NIPC *</label>
+                                <input type="text" class="form-control" name="vat_number" value="{{ old('vat_number', $beneficiary->vat_number) }}" required inputmode="numeric" pattern="\d{9}" placeholder="9 dígitos">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Cód. Certidão Comercial *</label>
+                                <input type="text" class="form-control" name="commercial_certificate_code" value="{{ old('commercial_certificate_code', $beneficiary->commercial_certificate_code) }}" required placeholder="0000-0000-0000" pattern="\d{4}-\d{4}-\d{4}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">IBAN *</label>
+                                <input type="text" class="form-control" name="iban" value="{{ old('iban', $beneficiary->iban) }}" required placeholder="PT50...">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Telefone</label>
@@ -108,6 +116,10 @@
                             <div class="col-md-6">
                                 <label class="form-label">Morada</label>
                                 <input type="text" class="form-control" name="address" value="{{ old('address', $beneficiary->address) }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Código Postal *</label>
+                                <input type="text" class="form-control" name="postal_code" value="{{ old('postal_code', $beneficiary->postal_code) }}" required placeholder="0000-000" pattern="\d{4}-\d{3}">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Cidade</label>

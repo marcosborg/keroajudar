@@ -41,12 +41,28 @@
                                 <input type="email" class="form-control" name="email" value="{{ old('email') }}" required>
                             </div>
                             <div class="col-md-6">
+                                <label class="form-label">NIPC *</label>
+                                <input type="text" class="form-control" name="vat_number" value="{{ old('vat_number') }}" required inputmode="numeric" pattern="\\d{9}" placeholder="9 dígitos">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Cód. Certidão Comercial *</label>
+                                <input type="text" class="form-control" name="commercial_certificate_code" value="{{ old('commercial_certificate_code') }}" required placeholder="0000-0000-0000" pattern="\\d{4}-\\d{4}-\\d{4}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">IBAN *</label>
+                                <input type="text" class="form-control" name="iban" value="{{ old('iban') }}" required placeholder="PT50...">
+                            </div>
+                            <div class="col-md-6">
                                 <label class="form-label">Telefone</label>
                                 <input type="text" class="form-control" name="contact_phone" value="{{ old('contact_phone') }}">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Website</label>
                                 <input type="text" class="form-control" name="website" value="{{ old('website') }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Código Postal *</label>
+                                <input type="text" class="form-control" name="postal_code" value="{{ old('postal_code') }}" required placeholder="0000-000" pattern="\\d{4}-\\d{3}">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Cidade</label>

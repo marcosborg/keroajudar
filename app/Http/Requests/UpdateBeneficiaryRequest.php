@@ -34,9 +34,22 @@ class UpdateBeneficiaryRequest extends FormRequest
                 'nullable',
             ],
             'vat_number' => [
-                'nullable',
+                'required',
                 'string',
                 'max:64',
+                'regex:/^\\d{9}$/',
+            ],
+            'commercial_certificate_code' => [
+                'required',
+                'string',
+                'max:20',
+                'regex:/^\\d{4}-\\d{4}-\\d{4}$/',
+            ],
+            'iban' => [
+                'required',
+                'string',
+                'max:34',
+                'regex:/^[A-Z]{2}\\d{2}[A-Z0-9]{11,30}$/',
             ],
             'contact_email' => [
                 'nullable',
@@ -70,6 +83,12 @@ class UpdateBeneficiaryRequest extends FormRequest
                 'nullable',
                 'string',
                 'max:255',
+            ],
+            'postal_code' => [
+                'required',
+                'string',
+                'max:16',
+                'regex:/^\\d{4}-\\d{3}$/',
             ],
             'city' => [
                 'nullable',
