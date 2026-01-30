@@ -60,6 +60,10 @@
                                 <label class="form-label">Website</label>
                                 <input type="text" class="form-control" name="website" value="{{ old('website') }}">
                             </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Morada</label>
+                                <input type="text" class="form-control" name="address" value="{{ old('address') }}">
+                            </div>
                             <div class="col-md-3">
                                 <label class="form-label">Código Postal *</label>
                                 <input type="text" class="form-control" name="postal_code" value="{{ old('postal_code') }}" required placeholder="0000-000" pattern="\\d{4}-\\d{3}">
@@ -68,7 +72,7 @@
                                 <label class="form-label">Cidade</label>
                                 <input type="text" class="form-control" name="city" value="{{ old('city') }}">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 <label class="form-label">País</label>
                                 <input type="text" class="form-control" name="country" value="{{ old('country') }}">
                             </div>
