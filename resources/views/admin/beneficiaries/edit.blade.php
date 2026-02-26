@@ -155,6 +155,16 @@
                 <span class="help-block">{{ trans('cruds.beneficiary.fields.postal_code_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required" for="default_commission_percent">{{ trans('cruds.beneficiary.fields.default_commission_percent') }}</label>
+                <input class="form-control {{ $errors->has('default_commission_percent') ? 'is-invalid' : '' }}" type="number" name="default_commission_percent" id="default_commission_percent" value="{{ old('default_commission_percent', $beneficiary->default_commission_percent) }}" min="0" max="100" step="0.01" required>
+                @if($errors->has('default_commission_percent'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('default_commission_percent') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.beneficiary.fields.default_commission_percent_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label for="city">{{ trans('cruds.beneficiary.fields.city') }}</label>
                 <input class="form-control {{ $errors->has('city') ? 'is-invalid' : '' }}" type="text" name="city" id="city" value="{{ old('city', $beneficiary->city) }}">
                 @if($errors->has('city'))

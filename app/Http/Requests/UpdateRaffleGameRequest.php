@@ -42,6 +42,11 @@ class UpdateRaffleGameRequest extends FormRequest
                 'nullable',
                 'string',
             ],
+            'commission_percent' => [
+                'required',
+                'numeric',
+                'between:0,100',
+            ],
         ];
     }
 }

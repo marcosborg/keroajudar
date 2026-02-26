@@ -60,6 +60,7 @@ class WebsiteController extends Controller
             'shareUrl' => route('website.beneficiary.donate', ['beneficiary' => $beneficiary->id, 'slug' => $expectedSlug]),
             'activeGame' => $activeGame,
             'rules' => $rules,
+            'commissionPercent' => $this->resolveCommissionPercent($beneficiary, $activeGame),
             'stats' => $stats,
         ]);
     }
@@ -74,6 +75,9 @@ class WebsiteController extends Controller
         return DB::transaction(function () use ($request, $beneficiary, $amount, $activeGame) {
             $numbers = [];
             $numbersCount = 0;
+            $commissionPercent = $this->resolveCommissionPercent($beneficiary, $activeGame);
+            $commissionAmount = round($amount * ($commissionPercent / 100), 2);
+            $beneficiaryAmount = round($amount - $commissionAmount, 2);
 
             if ($activeGame) {
                 RaffleGame::query()->whereKey($activeGame->id)->lockForUpdate()->first();
@@ -86,11 +90,15 @@ class WebsiteController extends Controller
                 'beneficiary_id' => $beneficiary->id,
                 'raffle_game_id' => $activeGame?->id,
                 'raffle_code' => $numbers ? (string) $numbers[0] : 'no-game',
+                'has_raffle_numbers' => !empty($numbers),
                 'email' => $request->input('email'),
                 'first_name' => $request->input('first_name'),
                 'last_name' => $request->input('last_name'),
                 'phone' => $request->input('phone'),
                 'amount' => $amount,
+                'commission_percent' => $commissionPercent,
+                'commission_amount' => $commissionAmount,
+                'beneficiary_amount' => $beneficiaryAmount,
                 'is_company' => $request->boolean('is_company'),
                 'nif' => $request->input('nif'),
                 'nipc' => $request->input('nipc'),
@@ -129,6 +137,12 @@ class WebsiteController extends Controller
                     'note' => 'Pagamento simulado',
                     'numbers' => $numbers,
                     'raffle_game_id' => $activeGame?->id,
+                    'mode' => $activeGame ? 'raffle' : 'regular',
+                    'split' => [
+                        'commission_percent' => $commissionPercent,
+                        'commission_amount' => $commissionAmount,
+                        'beneficiary_amount' => $beneficiaryAmount,
+                    ],
                 ], JSON_UNESCAPED_SLASHES),
             ]);
 
@@ -140,8 +154,28 @@ class WebsiteController extends Controller
                     'numbers' => $numbers,
                     'transaction' => $payment->transaction,
                     'game_active' => (bool) $activeGame,
+                    'commission_percent' => $commissionPercent,
+                    'commission_amount' => $commissionAmount,
+                    'beneficiary_amount' => $beneficiaryAmount,
                 ]);
         });
+    }
+
+    private function resolveCommissionPercent(Beneficiary $beneficiary, ?RaffleGame $activeGame): float
+    {
+        $percent = $activeGame
+            ? (float) $activeGame->commission_percent
+            : (float) $beneficiary->default_commission_percent;
+
+        if ($percent < 0) {
+            return 0.0;
+        }
+
+        if ($percent > 100) {
+            return 100.0;
+        }
+
+        return round($percent, 2);
     }
 
     private function resolveRaffleNumbersCount(float $amount, RaffleGame $game): int

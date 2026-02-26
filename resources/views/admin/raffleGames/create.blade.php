@@ -54,6 +54,14 @@
                 <span class="help-block">{{ trans('cruds.raffleGame.fields.description_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required" for="commission_percent">{{ trans('cruds.raffleGame.fields.commission_percent') }}</label>
+                <input class="form-control {{ $errors->has('commission_percent') ? 'is-invalid' : '' }}" type="number" name="commission_percent" id="commission_percent" value="{{ old('commission_percent', 0) }}" min="0" max="100" step="0.01" required>
+                @if($errors->has('commission_percent'))
+                    <span class="text-danger">{{ $errors->first('commission_percent') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.raffleGame.fields.commission_percent_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <div class="form-check {{ $errors->has('active') ? 'is-invalid' : '' }}">
                     <input type="hidden" name="active" value="0">
                     <input class="form-check-input" type="checkbox" name="active" id="active" value="1" {{ old('active', 1) == 1 ? 'checked' : '' }}>

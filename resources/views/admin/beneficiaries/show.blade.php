@@ -131,6 +131,14 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.beneficiary.fields.default_commission_percent') }}
+                        </th>
+                        <td>
+                            {{ number_format((float) $beneficiary->default_commission_percent, 2, ',', '.') }}%
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.beneficiary.fields.city') }}
                         </th>
                         <td>

@@ -46,6 +46,7 @@ class Beneficiary extends Authenticatable implements HasMedia
         'website',
         'address',
         'postal_code',
+        'default_commission_percent',
         'city',
         'country',
         'active',
@@ -65,6 +66,7 @@ class Beneficiary extends Authenticatable implements HasMedia
         'approved_at' => 'datetime',
         'last_login_at' => 'datetime',
         'active' => 'boolean',
+        'default_commission_percent' => 'decimal:2',
     ];
 
     protected function serializeDate(DateTimeInterface $date)

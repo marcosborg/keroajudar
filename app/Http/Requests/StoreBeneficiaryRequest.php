@@ -90,6 +90,11 @@ class StoreBeneficiaryRequest extends FormRequest
                 'max:16',
                 'regex:/^\\d{4}-\\d{3}$/',
             ],
+            'default_commission_percent' => [
+                'required',
+                'numeric',
+                'between:0,100',
+            ],
             'city' => [
                 'nullable',
                 'string',

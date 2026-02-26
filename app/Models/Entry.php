@@ -29,11 +29,15 @@ class Entry extends Model
         'beneficiary_id',
         'raffle_game_id',
         'raffle_code',
+        'has_raffle_numbers',
         'email',
         'first_name',
         'last_name',
         'phone',
         'amount',
+        'commission_percent',
+        'commission_amount',
+        'beneficiary_amount',
         'is_company',
         'nif',
         'nipc',
@@ -53,6 +57,10 @@ class Entry extends Model
 
     protected $casts = [
         'amount' => 'decimal:2',
+        'commission_percent' => 'decimal:2',
+        'commission_amount' => 'decimal:2',
+        'beneficiary_amount' => 'decimal:2',
+        'has_raffle_numbers' => 'boolean',
         'is_company' => 'boolean',
         'consent_privacy' => 'boolean',
     ];

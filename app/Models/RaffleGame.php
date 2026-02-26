@@ -28,6 +28,7 @@ class RaffleGame extends Model
         'ends_at',
         'active',
         'description',
+        'commission_percent',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -37,6 +38,7 @@ class RaffleGame extends Model
         'active' => 'boolean',
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
+        'commission_percent' => 'decimal:2',
     ];
 
     protected function serializeDate(DateTimeInterface $date)

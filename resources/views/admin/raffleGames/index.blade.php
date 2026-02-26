@@ -25,6 +25,7 @@
                         <th>{{ trans('cruds.raffleGame.fields.prize') }}</th>
                         <th>{{ trans('cruds.raffleGame.fields.starts_at') }}</th>
                         <th>{{ trans('cruds.raffleGame.fields.ends_at') }}</th>
+                        <th>{{ trans('cruds.raffleGame.fields.commission_percent') }}</th>
                         <th>{{ trans('cruds.raffleGame.fields.active') }}</th>
                         <th>&nbsp;</th>
                     </tr>
@@ -38,6 +39,7 @@
                             <td>{{ $raffleGame->prize->name ?? '' }}</td>
                             <td>{{ $raffleGame->starts_at ?? '' }}</td>
                             <td>{{ $raffleGame->ends_at ?? '' }}</td>
+                            <td>{{ number_format((float) $raffleGame->commission_percent, 2, ',', '.') }}%</td>
                             <td>
                                 <span style="display:none">{{ $raffleGame->active ?? '' }}</span>
                                 <input type="checkbox" disabled="disabled" {{ $raffleGame->active ? 'checked' : '' }}>

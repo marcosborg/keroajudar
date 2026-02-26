@@ -48,6 +48,13 @@
                             <p class="text-uppercase text-success fw-semibold mb-1">Donativo confirmado</p>
                             <h3 class="mb-1">Obrigado pelo seu apoio!</h3>
                             <p class="text-muted mb-0">Transacao: {{ session('donation.transaction') }}</p>
+                            <p class="text-muted mb-0">
+                                Comissão: {{ number_format((float) session('donation.commission_percent', 0), 2, ',', '.') }}%
+                                ({{ number_format((float) session('donation.commission_amount', 0), 2, ',', '.') }} &euro;)
+                            </p>
+                            <p class="text-muted mb-0">
+                                Beneficiário recebe: {{ number_format((float) session('donation.beneficiary_amount', 0), 2, ',', '.') }} &euro;
+                            </p>
                             @if(!session('donation.game_active'))
                                 <p class="text-muted mb-0">Nao ha sorteio ativo no momento. O donativo foi registado sem numeros.</p>
                             @endif
@@ -151,7 +158,14 @@
                 <div class="col-lg-4">
                     <div class="donation-card" id="donationForm">
                         <h3>Fazer Donativo</h3>
-                        <p class="text-muted">Escolha um valor e receba numeros para o sorteio.</p>
+                        <p class="text-muted">
+                            Comissão atual: {{ number_format((float) $commissionPercent, 2, ',', '.') }}%.
+                            @if($activeGame)
+                                Neste modo, recebe números para o sorteio.
+                            @else
+                                Sem sorteio ativo, o donativo é registado sem números.
+                            @endif
+                        </p>
                         @if(!$activeGame)
                             <div class="alert alert-light border">
                                 Nao ha sorteio ativo no momento. O seu donativo sera registado sem numeros.
