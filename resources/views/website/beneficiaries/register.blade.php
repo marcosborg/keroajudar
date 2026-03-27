@@ -42,7 +42,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">NIPC *</label>
-                                <input type="text" class="form-control" name="vat_number" value="{{ old('vat_number') }}" required inputmode="numeric" pattern="\\d{9}" placeholder="9 dígitos">
+                                <input type="text" class="form-control" name="vat_number" value="{{ old('vat_number') }}" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Cód. Certidão Comercial *</label>

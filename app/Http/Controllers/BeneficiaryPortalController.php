@@ -47,11 +47,6 @@ class BeneficiaryPortalController extends Controller
         ]);
 
         $validator->after(function ($validator) use ($request) {
-            $vat = preg_replace('/\\D+/', '', (string) $request->input('vat_number'));
-            if ($vat === '' || strlen($vat) !== 9) {
-                $validator->errors()->add('vat_number', 'O NIPC deve ter 9 dígitos.');
-            }
-
             $cert = trim((string) $request->input('commercial_certificate_code'));
             if ($cert !== '' && !preg_match('/^\\d{4}-\\d{4}-\\d{4}$/', $cert)) {
                 $validator->errors()->add('commercial_certificate_code', 'O código deve estar no formato 0000-0000-0000.');
@@ -75,7 +70,7 @@ class BeneficiaryPortalController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'contact_email' => $data['email'],
-            'vat_number' => preg_replace('/\\D+/', '', (string) $data['vat_number']),
+            'vat_number' => trim((string) $data['vat_number']),
             'commercial_certificate_code' => trim((string) $data['commercial_certificate_code']),
             'iban' => strtoupper(preg_replace('/\\s+/', '', (string) $data['iban'])),
             'address' => isset($data['address']) ? trim((string) $data['address']) : null,
@@ -170,11 +165,6 @@ class BeneficiaryPortalController extends Controller
         ]);
 
         $validator->after(function ($validator) use ($request) {
-            $vat = preg_replace('/\\D+/', '', (string) $request->input('vat_number'));
-            if ($vat === '' || strlen($vat) !== 9) {
-                $validator->errors()->add('vat_number', 'O NIPC deve ter 9 dígitos.');
-            }
-
             $cert = trim((string) $request->input('commercial_certificate_code'));
             if ($cert !== '' && !preg_match('/^\\d{4}-\\d{4}-\\d{4}$/', $cert)) {
                 $validator->errors()->add('commercial_certificate_code', 'O código deve estar no formato 0000-0000-0000.');
@@ -192,7 +182,7 @@ class BeneficiaryPortalController extends Controller
         });
 
         $data = $validator->validate();
-        $data['vat_number'] = preg_replace('/\\D+/', '', (string) $data['vat_number']);
+        $data['vat_number'] = trim((string) $data['vat_number']);
         $data['commercial_certificate_code'] = trim((string) $data['commercial_certificate_code']);
         $data['iban'] = strtoupper(preg_replace('/\\s+/', '', (string) $data['iban']));
         $data['postal_code'] = trim((string) $data['postal_code']);
