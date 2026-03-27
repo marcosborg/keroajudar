@@ -99,7 +99,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Cód. Certidão Comercial *</label>
-                                <input type="text" class="form-control" name="commercial_certificate_code" value="{{ old('commercial_certificate_code', $beneficiary->commercial_certificate_code) }}" required placeholder="0000-0000-0000" pattern="\d{4}-\d{4}-\d{4}">
+                                <input type="text" class="form-control" name="commercial_certificate_code" value="{{ old('commercial_certificate_code', $beneficiary->commercial_certificate_code) }}" required placeholder="0000-0000-0000">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">IBAN *</label>
