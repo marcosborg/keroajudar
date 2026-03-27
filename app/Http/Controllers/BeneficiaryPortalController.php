@@ -46,23 +46,6 @@ class BeneficiaryPortalController extends Controller
             'password' => ['required', 'confirmed', 'min:8'],
         ]);
 
-        $validator->after(function ($validator) use ($request) {
-            $cert = trim((string) $request->input('commercial_certificate_code'));
-            if ($cert !== '' && !preg_match('/^\\d{4}-\\d{4}-\\d{4}$/', $cert)) {
-                $validator->errors()->add('commercial_certificate_code', 'O código deve estar no formato 0000-0000-0000.');
-            }
-
-            $postal = trim((string) $request->input('postal_code'));
-            if ($postal !== '' && !preg_match('/^\\d{4}-\\d{3}$/', $postal)) {
-                $validator->errors()->add('postal_code', 'O código postal deve estar no formato 0000-000.');
-            }
-
-            $iban = strtoupper(preg_replace('/\\s+/', '', (string) $request->input('iban')));
-            if ($iban === '' || !preg_match('/^[A-Z]{2}\\d{2}[A-Z0-9]{11,30}$/', $iban)) {
-                $validator->errors()->add('iban', 'O IBAN parece inválido.');
-            }
-        });
-
         $data = $validator->validate();
 
         $beneficiary = Beneficiary::create([
@@ -163,23 +146,6 @@ class BeneficiaryPortalController extends Controller
             'photo' => ['nullable', 'image', 'max:5120'],
             'logo_square' => ['nullable', 'image', 'max:5120'],
         ]);
-
-        $validator->after(function ($validator) use ($request) {
-            $cert = trim((string) $request->input('commercial_certificate_code'));
-            if ($cert !== '' && !preg_match('/^\\d{4}-\\d{4}-\\d{4}$/', $cert)) {
-                $validator->errors()->add('commercial_certificate_code', 'O código deve estar no formato 0000-0000-0000.');
-            }
-
-            $postal = trim((string) $request->input('postal_code'));
-            if ($postal !== '' && !preg_match('/^\\d{4}-\\d{3}$/', $postal)) {
-                $validator->errors()->add('postal_code', 'O código postal deve estar no formato 0000-000.');
-            }
-
-            $iban = strtoupper(preg_replace('/\\s+/', '', (string) $request->input('iban')));
-            if ($iban === '' || !preg_match('/^[A-Z]{2}\\d{2}[A-Z0-9]{11,30}$/', $iban)) {
-                $validator->errors()->add('iban', 'O IBAN parece inválido.');
-            }
-        });
 
         $data = $validator->validate();
         $data['vat_number'] = trim((string) $data['vat_number']);
