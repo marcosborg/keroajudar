@@ -66,7 +66,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Código Postal *</label>
-                                <input type="text" class="form-control" name="postal_code" value="{{ old('postal_code') }}" required placeholder="0000-000" pattern="\\d{4}-\\d{3}">
+                                <input type="text" class="form-control" name="postal_code" value="{{ old('postal_code') }}" required placeholder="0000-000">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Cidade</label>
