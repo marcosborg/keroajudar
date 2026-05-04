@@ -117,6 +117,16 @@
                 </a>
             </li>
         @endcan
+        @can('advertisement_access')
+            <li class="c-sidebar-nav-item">
+                <a href="{{ route("admin.advertisements.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/advertisements") || request()->is("admin/advertisements/*") ? "c-active" : "" }}">
+                    <i class="fa-fw fas fa-ad c-sidebar-nav-icon">
+
+                    </i>
+                    {{ trans('cruds.advertisement.title') }}
+                </a>
+            </li>
+        @endcan
         @can('payment_access')
             <li class="c-sidebar-nav-item">
                 <a href="{{ route("admin.payments.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/payments") || request()->is("admin/payments/*") ? "c-active" : "" }}">

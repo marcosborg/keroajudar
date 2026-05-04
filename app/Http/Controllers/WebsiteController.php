@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreBeneficiaryDonationRequest;
 use App\Models\Beneficiary;
 use App\Models\BeneficiaryCategory;
+use App\Models\Advertisement;
 use App\Models\Entry;
 use App\Models\Payment;
 use App\Models\RaffleGame;
@@ -18,7 +19,22 @@ class WebsiteController extends Controller
 {
     public function index()
     {
-        return view('website.home');
+        $gameAdvertisements = Advertisement::query()
+            ->active()
+            ->where('type', Advertisement::TYPE_GAME)
+            ->orderBy('sort_order')
+            ->orderByDesc('draw_date')
+            ->get();
+
+        $sponsorAdvertisements = Advertisement::query()
+            ->active()
+            ->where('type', Advertisement::TYPE_SPONSOR)
+            ->with('media')
+            ->orderBy('sort_order')
+            ->orderBy('title')
+            ->get();
+
+        return view('website.home', compact('gameAdvertisements', 'sponsorAdvertisements'));
     }
 
     public function donativo()

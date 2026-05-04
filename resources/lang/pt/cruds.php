@@ -408,7 +408,39 @@ return [
             'deleted_at'        => 'Deleted at',
             'deleted_at_helper' => ' ',
         ],
-    ],];
+    ],
+
+    'advertisement' => [
+        'title'          => 'Publicidade',
+        'title_singular' => 'Publicidade',
+        'fields'         => [
+            'id'               => 'ID',
+            'id_helper'        => ' ',
+            'type'             => 'Tipo',
+            'type_helper'      => ' ',
+            'title'            => 'Título',
+            'title_helper'     => ' ',
+            'subtitle'         => 'Texto secundário',
+            'subtitle_helper'  => ' ',
+            'draw_date'        => 'Data do sorteio',
+            'draw_date_helper' => 'Usado na faixa de jogos. Formato: AAAA-MM-DD',
+            'link_url'         => 'URL',
+            'link_url_helper'  => 'Inclua http(s)://',
+            'logo'             => 'Logo',
+            'logo_helper'      => 'Usado sobretudo nos sponsors.',
+            'sort_order'       => 'Ordem',
+            'sort_order_helper'=> ' ',
+            'active'           => 'Ativo',
+            'active_helper'    => 'Mostrar na home',
+            'created_at'       => 'Created at',
+            'created_at_helper'=> ' ',
+            'updated_at'       => 'Updated at',
+            'updated_at_helper'=> ' ',
+            'deleted_at'       => 'Deleted at',
+            'deleted_at_helper'=> ' ',
+        ],
+    ],
+];
 
 
 

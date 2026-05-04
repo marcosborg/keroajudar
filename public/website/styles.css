@@ -16,6 +16,127 @@ body {
   margin: 0;
 }
 
+/* ---------- PUBLICIDADE HOME ---------- */
+.ad-marquee{
+  overflow:hidden;
+  width:100%;
+}
+.ad-marquee-track{
+  display:flex;
+  align-items:center;
+  width:max-content;
+  animation: ad-marquee-scroll 34s linear infinite;
+}
+.ad-marquee-track-slow{ animation-duration:42s; }
+.ad-marquee:hover .ad-marquee-track{ animation-play-state: paused; }
+
+.ad-marquee-games{
+  background:#0f5132;
+  color:#fff;
+  border-bottom:1px solid rgba(255,255,255,.12);
+}
+.game-ad-item{
+  display:flex;
+  align-items:center;
+  gap:.55rem;
+  min-height:56px;
+  padding:0 1.25rem;
+  color:#fff;
+  text-decoration:none;
+  white-space:nowrap;
+  font-weight:700;
+}
+.game-ad-item:hover{ color:#fff; text-decoration:none; }
+.game-ad-dot{
+  width:11px;
+  height:11px;
+  border-radius:50%;
+  background:#f8d36b;
+  box-shadow:0 0 0 5px rgba(248,211,107,.18);
+}
+.game-ad-date{
+  border:1px solid rgba(255,255,255,.45);
+  border-radius:999px;
+  padding:.15rem .5rem;
+  font-size:.78rem;
+  font-weight:800;
+}
+.game-ad-subtitle{
+  color:rgba(255,255,255,.82);
+  font-size:.9rem;
+  font-weight:600;
+}
+
+.ad-marquee-sponsors{
+  background:linear-gradient(180deg, #ecfbf5, #f7fffb);
+  padding:.75rem 0;
+}
+.sponsor-ad-item{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:220px;
+  height:96px;
+  margin:0 .55rem;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:8px;
+  color:var(--ink-900);
+  text-decoration:none;
+  font-weight:800;
+}
+.sponsor-ad-item:hover{ color:var(--green-700); text-decoration:none; }
+.sponsor-ad-item img{
+  max-width:170px;
+  max-height:64px;
+  object-fit:contain;
+}
+.sponsor-placeholder{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:.35rem;
+  width:100%;
+  height:100%;
+  padding:.75rem;
+  color:var(--green-700);
+  background:linear-gradient(135deg, #f7fffb, #e6f5ef);
+  text-align:center;
+}
+.sponsor-placeholder i{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:#fff;
+  color:var(--green-600);
+  font-size:1.2rem;
+  box-shadow:0 4px 12px rgba(15,23,42,.08);
+}
+.sponsor-placeholder span{
+  display:block;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:.95rem;
+}
+@keyframes ad-marquee-scroll{
+  from{ transform:translateX(0); }
+  to{ transform:translateX(-50%); }
+}
+@media (max-width: 576px){
+  .game-ad-item{ min-height:50px; padding:0 .9rem; font-size:.9rem; }
+  .game-ad-subtitle{ display:none; }
+  .sponsor-ad-item{ width:170px; height:76px; }
+  .sponsor-ad-item img{ max-width:130px; max-height:52px; }
+  .sponsor-placeholder i{ width:28px; height:28px; font-size:1rem; }
+  .sponsor-placeholder span{ font-size:.82rem; }
+}
+
 /* ---------- HERO (Home) ---------- */
 .hero {
   /* Se quiseres o degradé por trás da foto, mantém a primeira linha; senão remove */

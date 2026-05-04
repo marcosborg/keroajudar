@@ -80,6 +80,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('payments/destroy', 'PaymentController@massDestroy')->name('payments.massDestroy');
     Route::resource('payments', 'PaymentController');
 
+    // Advertisements
+    Route::delete('advertisements/destroy', 'AdvertisementsController@massDestroy')->name('advertisements.massDestroy');
+    Route::post('advertisements/media', 'AdvertisementsController@storeMedia')->name('advertisements.storeMedia');
+    Route::resource('advertisements', 'AdvertisementsController');
+
     // Pedidos EuPago (read-only)
     Route::resource('pedidos', 'PedidosController')->only(['index', 'show']);
 
