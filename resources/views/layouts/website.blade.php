@@ -33,7 +33,7 @@
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <!-- Custom Styles -->
-    <link rel="stylesheet" href="{{ asset('website/styles.css') }}?v=20261021" />
+    <link rel="stylesheet" href="{{ asset('website/styles.css') }}?v=20261021-2" />
     @stack('styles')
 </head>
 <body class="@yield('body-class')">
