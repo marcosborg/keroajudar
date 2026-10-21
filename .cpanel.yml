@@ -1,0 +1,7 @@
+---
+deployment:
+  tasks:
+    - export APPPATH=/home3/kero/public_html
+    - cd $APPPATH && /opt/cpanel/ea-php83/root/usr/bin/php artisan migrate --force
+    - cd $APPPATH && /opt/cpanel/ea-php83/root/usr/bin/php artisan optimize:clear
+    - cd $APPPATH && /opt/cpanel/ea-php83/root/usr/bin/php artisan optimize

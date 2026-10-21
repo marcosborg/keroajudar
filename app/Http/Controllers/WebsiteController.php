@@ -14,6 +14,7 @@ use App\Models\RaffleRule;
 use App\Services\HomeAdvertisingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class WebsiteController extends Controller
@@ -36,7 +37,7 @@ class WebsiteController extends Controller
             ->get();
 
         $adFilters = $advertising->filters($request);
-        $homeAdSlots = config('advertising.enabled')
+        $homeAdSlots = config('advertising.enabled') && Schema::hasTable('ad_positions') && Schema::hasTable('ad_campaigns')
             ? $advertising->slots($request, $adFilters['category'], $adFilters['region'])
             : collect();
 
