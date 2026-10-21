@@ -127,6 +127,19 @@
                 </a>
             </li>
         @endcan
+        @can('ad_campaign_access')
+            <li class="c-sidebar-nav-dropdown {{ request()->is('admin/ad-campaigns*') || request()->is('admin/ad-positions*') || request()->is('admin/ad-reports*') ? 'c-show' : '' }}">
+                <a class="c-sidebar-nav-dropdown-toggle" href="#">
+                    <i class="fa-fw fas fa-bullhorn c-sidebar-nav-icon"></i>
+                    Centro publicitário
+                </a>
+                <ul class="c-sidebar-nav-dropdown-items">
+                    <li class="c-sidebar-nav-item"><a href="{{ route('admin.ad-campaigns.index') }}" class="c-sidebar-nav-link {{ request()->is('admin/ad-campaigns*') ? 'c-active' : '' }}"><i class="c-sidebar-nav-icon fas fa-ad"></i> Campanhas</a></li>
+                    <li class="c-sidebar-nav-item"><a href="{{ route('admin.ad-positions.index') }}" class="c-sidebar-nav-link {{ request()->is('admin/ad-positions*') ? 'c-active' : '' }}"><i class="c-sidebar-nav-icon fas fa-th-large"></i> Posições</a></li>
+                    <li class="c-sidebar-nav-item"><a href="{{ route('admin.ad-reports.index') }}" class="c-sidebar-nav-link {{ request()->is('admin/ad-reports*') ? 'c-active' : '' }}"><i class="c-sidebar-nav-icon fas fa-chart-line"></i> Relatórios</a></li>
+                </ul>
+            </li>
+        @endcan
         @can('payment_access')
             <li class="c-sidebar-nav-item">
                 <a href="{{ route("admin.payments.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/payments") || request()->is("admin/payments/*") ? "c-active" : "" }}">

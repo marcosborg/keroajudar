@@ -16,6 +16,49 @@ body {
   margin: 0;
 }
 
+/* ---------- CENTRO PUBLICITÁRIO ---------- */
+.advertising-center{ background:#f7faf8; border-top:1px solid #e2ece6; }
+.advertising-center-heading{ display:flex; align-items:end; justify-content:space-between; gap:1rem; margin-bottom:1.5rem; }
+.advertising-center-heading h2{ color:var(--ink-900); font-weight:800; margin:.15rem 0 0; }
+.advertising-kicker{ color:var(--green-700); font-size:.78rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+.advertising-filters{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; padding:1rem; margin-bottom:1.5rem; background:#fff; border:1px solid var(--border); border-radius:14px; }
+.advertising-category-filter{ display:flex; flex-wrap:wrap; gap:.45rem; }
+.ad-filter-pill{ padding:.45rem .8rem; border:1px solid #c9ded1; border-radius:999px; color:var(--green-700); font-weight:700; text-decoration:none; }
+.ad-filter-pill:hover,.ad-filter-pill.active{ color:#fff; background:var(--green-600); border-color:var(--green-600); }
+.advertising-region-filter{ display:flex; align-items:center; gap:.55rem; }
+.advertising-region-filter label{ color:var(--ink-700); font-size:.88rem; font-weight:700; }
+.advertising-region-filter select{ min-width:190px; padding:.48rem 2rem .48rem .7rem; border:1px solid #c9ded1; border-radius:8px; background:#fff; color:var(--ink-900); }
+.advertising-grid{ display:flex; flex-direction:column; gap:1.25rem; }
+.advertising-row{ display:flex; justify-content:center; align-items:center; gap:1.25rem; width:100%; }
+.advertising-slot{ position:relative; flex:0 1 var(--slot-width); width:var(--slot-width); max-width:100%; aspect-ratio:var(--desktop-ratio); overflow:hidden; background:#fff; border:1px solid #dbe8df; border-radius:12px; box-shadow:0 7px 20px rgba(15,23,42,.06); }
+.direct-ad,.direct-ad picture,.direct-ad img,.adsense-ad,.available-ad{ display:block; width:100%; height:100%; }
+.direct-ad img{ object-fit:cover; }
+.direct-ad:focus-visible,.available-ad:focus-visible{ outline:3px solid var(--green-500); outline-offset:-3px; }
+.ad-disclosure{ position:absolute; top:.35rem; right:.35rem; padding:.12rem .35rem; background:rgba(15,23,42,.72); border-radius:4px; color:#fff; font-size:.62rem; letter-spacing:.03em; }
+.adsense-ad{ display:flex; align-items:center; justify-content:center; }
+.available-ad{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.25rem; padding:.65rem; background:linear-gradient(135deg,#fff,#eaf5ee); color:var(--green-700); text-align:center; text-decoration:none; }
+.available-ad:hover{ color:#0f5132; background:linear-gradient(135deg,#f7fffa,#dff0e6); }
+.available-ad i{ font-size:1.35rem; }
+.available-ad strong{ font-size:.95rem; }
+.available-ad span{ color:var(--ink-500); font-size:.72rem; }
+.advertising-slot-home-02 .available-ad,.advertising-slot-home-03 .available-ad{ flex-direction:row; gap:.6rem; }
+.advertising-slot-home-02 .available-ad i,.advertising-slot-home-03 .available-ad i{ font-size:1rem; }
+@media (max-width:1199px) and (min-width:768px){
+  .advertising-row-2 .advertising-slot{ width:calc(50% - .625rem); }
+  .advertising-row-3 .advertising-slot{ width:calc(33.333% - .84rem); }
+  .advertising-row-4 .advertising-slot{ width:calc(25% - .94rem); }
+}
+@media (max-width:767px){
+  .advertising-center-heading{ align-items:flex-start; flex-direction:column; }
+  .advertising-filters{ align-items:stretch; }
+  .advertising-region-filter{ width:100%; align-items:flex-start; flex-direction:column; }
+  .advertising-region-filter select{ width:100%; }
+  .advertising-row{ flex-direction:column; gap:1rem; }
+  .advertising-slot{ flex:none; width:min(100%,320px); aspect-ratio:320 / 100; }
+  .advertising-row-2 .advertising-slot,.advertising-row-3 .advertising-slot,.advertising-row-4 .advertising-slot{ width:min(100%,320px); }
+  .available-ad{ flex-direction:row; gap:.6rem; }
+}
+
 /* ---------- PUBLICIDADE HOME ---------- */
 .ad-marquee{
   overflow:hidden;

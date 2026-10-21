@@ -3,21 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBeneficiaryDonationRequest;
+use App\Models\Advertisement;
 use App\Models\Beneficiary;
 use App\Models\BeneficiaryCategory;
-use App\Models\Advertisement;
 use App\Models\Entry;
 use App\Models\Payment;
 use App\Models\RaffleGame;
 use App\Models\RaffleNumber;
 use App\Models\RaffleRule;
+use App\Services\HomeAdvertisingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class WebsiteController extends Controller
 {
-    public function index()
+    public function index(Request $request, HomeAdvertisingService $advertising)
     {
         $gameAdvertisements = Advertisement::query()
             ->active()
@@ -34,7 +35,12 @@ class WebsiteController extends Controller
             ->orderBy('title')
             ->get();
 
-        return view('website.home', compact('gameAdvertisements', 'sponsorAdvertisements'));
+        $adFilters = $advertising->filters($request);
+        $homeAdSlots = config('advertising.enabled')
+            ? $advertising->slots($request, $adFilters['category'], $adFilters['region'])
+            : collect();
+
+        return view('website.home', compact('gameAdvertisements', 'sponsorAdvertisements', 'homeAdSlots', 'adFilters'));
     }
 
     public function donativo()
@@ -106,7 +112,7 @@ class WebsiteController extends Controller
                 'beneficiary_id' => $beneficiary->id,
                 'raffle_game_id' => $activeGame?->id,
                 'raffle_code' => $numbers ? (string) $numbers[0] : 'no-game',
-                'has_raffle_numbers' => !empty($numbers),
+                'has_raffle_numbers' => ! empty($numbers),
                 'email' => $request->input('email'),
                 'first_name' => $request->input('first_name'),
                 'last_name' => $request->input('last_name'),
@@ -142,7 +148,7 @@ class WebsiteController extends Controller
             $payment = Payment::create([
                 'entry_id' => $entry->id,
                 'provider' => 'sandbox',
-                'transaction' => 'SBX-' . Str::upper(Str::random(10)),
+                'transaction' => 'SBX-'.Str::upper(Str::random(10)),
                 'amount' => $amount,
                 'currency' => 'EUR',
                 'status' => 'confirmed',
@@ -203,7 +209,7 @@ class WebsiteController extends Controller
             ->orderByDesc('amount')
             ->first();
 
-        if (!$rule) {
+        if (! $rule) {
             return 1;
         }
 

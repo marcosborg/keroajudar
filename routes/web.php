@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\AdvertisingMetricsController;
 use App\Http\Controllers\WebsiteController;
 
-Route::prefix('/')->group(function() {
+Route::prefix('/')->group(function () {
     Route::get('/', [WebsiteController::class, 'index'])->name('website.home');
     Route::get('donativo', [WebsiteController::class, 'donativo'])->name('website.donativo');
     Route::get('beneficiario/{beneficiary}/{slug?}', [WebsiteController::class, 'beneficiaryDonation'])->name('website.beneficiary.donate');
@@ -10,6 +11,11 @@ Route::prefix('/')->group(function() {
     Route::get('quem-somos', [WebsiteController::class, 'quemSomos'])->name('website.quem-somos');
     Route::get('contactos', [WebsiteController::class, 'contactos'])->name('website.contactos');
 });
+
+Route::post('advertising/impressions', [AdvertisingMetricsController::class, 'impressions'])
+    ->middleware('throttle:advertising')->name('advertising.impressions');
+Route::get('advertising/click/{token}', [AdvertisingMetricsController::class, 'click'])
+    ->middleware('throttle:advertising')->name('advertising.click');
 
 Route::prefix('beneficiarios')->name('beneficiaries.')->group(function () {
     Route::get('/', [\App\Http\Controllers\BeneficiaryPortalController::class, 'index'])->name('index');
@@ -84,6 +90,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('advertisements/destroy', 'AdvertisementsController@massDestroy')->name('advertisements.massDestroy');
     Route::post('advertisements/media', 'AdvertisementsController@storeMedia')->name('advertisements.storeMedia');
     Route::resource('advertisements', 'AdvertisementsController');
+
+    // Centro publicitário
+    Route::post('ad-campaigns/media', 'AdCampaignController@storeMedia')->name('ad-campaigns.storeMedia');
+    Route::resource('ad-campaigns', 'AdCampaignController')->except(['show']);
+    Route::get('ad-positions', 'AdPositionController@index')->name('ad-positions.index');
+    Route::get('ad-reports', 'AdReportController@index')->name('ad-reports.index');
+    Route::get('ad-reports/export', 'AdReportController@export')->name('ad-reports.export');
 
     // Pedidos EuPago (read-only)
     Route::resource('pedidos', 'PedidosController')->only(['index', 'show']);

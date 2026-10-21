@@ -60,6 +60,10 @@
 </section>
 @endif
 
+@if(config('advertising.enabled'))
+    @include('website.partials.ad-center')
+@endif
+
 <!-- Project Description -->
 <section class="py-5">
     <div class="container">

@@ -17,321 +17,331 @@ class PermissionsTableSeeder extends Seeder
 
         $permissions = [
             [
-                'id'    => 1,
+                'id' => 1,
                 'title' => 'user_management_access',
             ],
             [
-                'id'    => 2,
+                'id' => 2,
                 'title' => 'permission_create',
             ],
             [
-                'id'    => 3,
+                'id' => 3,
                 'title' => 'permission_edit',
             ],
             [
-                'id'    => 4,
+                'id' => 4,
                 'title' => 'permission_show',
             ],
             [
-                'id'    => 5,
+                'id' => 5,
                 'title' => 'permission_delete',
             ],
             [
-                'id'    => 6,
+                'id' => 6,
                 'title' => 'permission_access',
             ],
             [
-                'id'    => 7,
+                'id' => 7,
                 'title' => 'role_create',
             ],
             [
-                'id'    => 8,
+                'id' => 8,
                 'title' => 'role_edit',
             ],
             [
-                'id'    => 9,
+                'id' => 9,
                 'title' => 'role_show',
             ],
             [
-                'id'    => 10,
+                'id' => 10,
                 'title' => 'role_delete',
             ],
             [
-                'id'    => 11,
+                'id' => 11,
                 'title' => 'role_access',
             ],
             [
-                'id'    => 12,
+                'id' => 12,
                 'title' => 'user_create',
             ],
             [
-                'id'    => 13,
+                'id' => 13,
                 'title' => 'user_edit',
             ],
             [
-                'id'    => 14,
+                'id' => 14,
                 'title' => 'user_show',
             ],
             [
-                'id'    => 15,
+                'id' => 15,
                 'title' => 'user_delete',
             ],
             [
-                'id'    => 16,
+                'id' => 16,
                 'title' => 'user_access',
             ],
             [
-                'id'    => 17,
+                'id' => 17,
                 'title' => 'entry_create',
             ],
             [
-                'id'    => 18,
+                'id' => 18,
                 'title' => 'entry_edit',
             ],
             [
-                'id'    => 19,
+                'id' => 19,
                 'title' => 'entry_show',
             ],
             [
-                'id'    => 20,
+                'id' => 20,
                 'title' => 'entry_delete',
             ],
             [
-                'id'    => 21,
+                'id' => 21,
                 'title' => 'entry_access',
             ],
             [
-                'id'    => 22,
+                'id' => 22,
                 'title' => 'country_create',
             ],
             [
-                'id'    => 23,
+                'id' => 23,
                 'title' => 'country_edit',
             ],
             [
-                'id'    => 24,
+                'id' => 24,
                 'title' => 'country_show',
             ],
             [
-                'id'    => 25,
+                'id' => 25,
                 'title' => 'country_delete',
             ],
             [
-                'id'    => 26,
+                'id' => 26,
                 'title' => 'country_access',
             ],
             [
-                'id'    => 27,
+                'id' => 27,
                 'title' => 'prize_create',
             ],
             [
-                'id'    => 28,
+                'id' => 28,
                 'title' => 'prize_edit',
             ],
             [
-                'id'    => 29,
+                'id' => 29,
                 'title' => 'prize_show',
             ],
             [
-                'id'    => 30,
+                'id' => 30,
                 'title' => 'prize_delete',
             ],
             [
-                'id'    => 31,
+                'id' => 31,
                 'title' => 'prize_access',
             ],
             [
-                'id'    => 32,
+                'id' => 32,
                 'title' => 'winner_create',
             ],
             [
-                'id'    => 33,
+                'id' => 33,
                 'title' => 'winner_edit',
             ],
             [
-                'id'    => 34,
+                'id' => 34,
                 'title' => 'winner_show',
             ],
             [
-                'id'    => 35,
+                'id' => 35,
                 'title' => 'winner_delete',
             ],
             [
-                'id'    => 36,
+                'id' => 36,
                 'title' => 'winner_access',
             ],
             [
-                'id'    => 37,
+                'id' => 37,
                 'title' => 'payment_create',
             ],
             [
-                'id'    => 38,
+                'id' => 38,
                 'title' => 'payment_edit',
             ],
             [
-                'id'    => 39,
+                'id' => 39,
                 'title' => 'payment_show',
             ],
             [
-                'id'    => 40,
+                'id' => 40,
                 'title' => 'payment_delete',
             ],
             [
-                'id'    => 41,
+                'id' => 41,
                 'title' => 'payment_access',
             ],
             [
-                'id'    => 42,
+                'id' => 42,
                 'title' => 'content_management_access',
             ],
             [
-                'id'    => 43,
+                'id' => 43,
                 'title' => 'content_category_create',
             ],
             [
-                'id'    => 44,
+                'id' => 44,
                 'title' => 'content_category_edit',
             ],
             [
-                'id'    => 45,
+                'id' => 45,
                 'title' => 'content_category_show',
             ],
             [
-                'id'    => 46,
+                'id' => 46,
                 'title' => 'content_category_delete',
             ],
             [
-                'id'    => 47,
+                'id' => 47,
                 'title' => 'content_category_access',
             ],
             [
-                'id'    => 48,
+                'id' => 48,
                 'title' => 'content_tag_create',
             ],
             [
-                'id'    => 49,
+                'id' => 49,
                 'title' => 'content_tag_edit',
             ],
             [
-                'id'    => 50,
+                'id' => 50,
                 'title' => 'content_tag_show',
             ],
             [
-                'id'    => 51,
+                'id' => 51,
                 'title' => 'content_tag_delete',
             ],
             [
-                'id'    => 52,
+                'id' => 52,
                 'title' => 'content_tag_access',
             ],
             [
-                'id'    => 53,
+                'id' => 53,
                 'title' => 'content_page_create',
             ],
             [
-                'id'    => 54,
+                'id' => 54,
                 'title' => 'content_page_edit',
             ],
             [
-                'id'    => 55,
+                'id' => 55,
                 'title' => 'content_page_show',
             ],
             [
-                'id'    => 56,
+                'id' => 56,
                 'title' => 'content_page_delete',
             ],
             [
-                'id'    => 57,
+                'id' => 57,
                 'title' => 'content_page_access',
             ],
             [
-                'id'    => 58,
+                'id' => 58,
                 'title' => 'profile_password_edit',
             ],
             [
-                'id'    => 59,
+                'id' => 59,
                 'title' => 'beneficiary_management_access',
             ],
             [
-                'id'    => 60,
+                'id' => 60,
                 'title' => 'beneficiary_category_create',
             ],
             [
-                'id'    => 61,
+                'id' => 61,
                 'title' => 'beneficiary_category_edit',
             ],
             [
-                'id'    => 62,
+                'id' => 62,
                 'title' => 'beneficiary_category_show',
             ],
             [
-                'id'    => 63,
+                'id' => 63,
                 'title' => 'beneficiary_category_delete',
             ],
             [
-                'id'    => 64,
+                'id' => 64,
                 'title' => 'beneficiary_category_access',
             ],
             [
-                'id'    => 65,
+                'id' => 65,
                 'title' => 'beneficiary_create',
             ],
             [
-                'id'    => 66,
+                'id' => 66,
                 'title' => 'beneficiary_edit',
             ],
             [
-                'id'    => 67,
+                'id' => 67,
                 'title' => 'beneficiary_show',
             ],
             [
-                'id'    => 68,
+                'id' => 68,
                 'title' => 'beneficiary_delete',
             ],
             [
-                'id'    => 69,
+                'id' => 69,
                 'title' => 'beneficiary_access',
             ],
             [
-                'id'    => 70,
+                'id' => 70,
                 'title' => 'raffle_rule_create',
             ],
             [
-                'id'    => 71,
+                'id' => 71,
                 'title' => 'raffle_rule_edit',
             ],
             [
-                'id'    => 72,
+                'id' => 72,
                 'title' => 'raffle_rule_show',
             ],
             [
-                'id'    => 73,
+                'id' => 73,
                 'title' => 'raffle_rule_delete',
             ],
             [
-                'id'    => 74,
+                'id' => 74,
                 'title' => 'raffle_rule_access',
             ],
             [
-                'id'    => 75,
+                'id' => 75,
                 'title' => 'raffle_game_create',
             ],
             [
-                'id'    => 76,
+                'id' => 76,
                 'title' => 'raffle_game_edit',
             ],
             [
-                'id'    => 77,
+                'id' => 77,
                 'title' => 'raffle_game_show',
             ],
             [
-                'id'    => 78,
+                'id' => 78,
                 'title' => 'raffle_game_delete',
             ],
             [
-                'id'    => 79,
+                'id' => 79,
                 'title' => 'raffle_game_access',
             ],
+            ['id' => 80, 'title' => 'advertisement_create'],
+            ['id' => 81, 'title' => 'advertisement_edit'],
+            ['id' => 82, 'title' => 'advertisement_show'],
+            ['id' => 83, 'title' => 'advertisement_delete'],
+            ['id' => 84, 'title' => 'advertisement_access'],
+            ['id' => 85, 'title' => 'ad_campaign_create'],
+            ['id' => 86, 'title' => 'ad_campaign_edit'],
+            ['id' => 87, 'title' => 'ad_campaign_show'],
+            ['id' => 88, 'title' => 'ad_campaign_delete'],
+            ['id' => 89, 'title' => 'ad_campaign_access'],
         ];
 
         Permission::insert($permissions);

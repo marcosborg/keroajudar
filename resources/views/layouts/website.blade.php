@@ -26,13 +26,14 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>Kero Ajudar - Home</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <!-- Custom Styles -->
-    <link rel="stylesheet" href="{{ asset('website/styles.css') }}?v=20251205" />
+    <link rel="stylesheet" href="{{ asset('website/styles.css') }}?v=20261021" />
     @stack('styles')
 </head>
 <body class="@yield('body-class')">
@@ -40,6 +41,7 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P5JGM585"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
+    @if(!config('advertising.adsense.enabled'))
     <div id="consent-banner" class="consent-banner d-none">
         <div class="consent-content">
             <div class="consent-text">
@@ -52,6 +54,7 @@
             </div>
         </div>
     </div>
+    @endif
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
         <div class="container">
@@ -147,6 +150,7 @@
             }
         }
     </style>
+    @if(!config('advertising.adsense.enabled'))
     <script>
         (function() {
             const banner = document.getElementById('consent-banner');
@@ -211,6 +215,7 @@
             });
         })();
     </script>
+    @endif
     @stack('scripts')
 </body>
 </html>
