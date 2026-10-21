@@ -3,24 +3,6 @@
 use App\Http\Controllers\AdvertisingMetricsController;
 use App\Http\Controllers\WebsiteController;
 
-Route::get('__deploy/20261021-6f3b88d1a2c74f69b4d17c5e', function () {
-    abort_unless(request()->getHost() === 'kero.pt', 404);
-
-    $migrationStatus = \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-    $migrationOutput = \Illuminate\Support\Facades\Artisan::output();
-
-    if ($migrationStatus === 0) {
-        \Illuminate\Support\Facades\Artisan::call('optimize:clear');
-        \Illuminate\Support\Facades\Artisan::call('optimize');
-    }
-
-    return response()->json([
-        'ok' => $migrationStatus === 0,
-        'migration_status' => $migrationStatus,
-        'migration_output' => $migrationOutput,
-    ], $migrationStatus === 0 ? 200 : 500);
-});
-
 Route::prefix('/')->group(function () {
     Route::get('/', [WebsiteController::class, 'index'])->name('website.home');
     Route::get('donativo', [WebsiteController::class, 'donativo'])->name('website.donativo');
