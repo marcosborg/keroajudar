@@ -4,6 +4,7 @@ return [
     'api_key' => env('EUPAGO_API_KEY'),
     'sandbox' => (bool) env('EUPAGO_SANDBOX', true),
     'callback_url' => env('EUPAGO_CALLBACK_URL', env('APP_URL') . '/api/eupago/callback'),
+    'advertising_extern_key' => env('EUPAGO_ADVERTISING_EXTERN_KEY'),
     'endpoints' => [
         'split_multibanco' => '/api/v1/split-payments/multibanco',
         'split_mbway'      => '/api/v1/split-payments/mbway',

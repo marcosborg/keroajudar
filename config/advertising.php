@@ -2,6 +2,7 @@
 
 return [
     'enabled' => env('AD_CENTER_ENABLED', true),
+    'booking_enabled' => env('ADVERTISING_BOOKING_ENABLED', true),
 
     'categories' => [
         'animals' => 'Animais',

@@ -57,6 +57,15 @@ body {
   .available-ad{ flex-direction:row; gap:.6rem; }
 }
 
+/* ---------- PEDIDO DE PUBLICIDADE ---------- */
+.advertising-order-page{ background:#f7faf8; min-height:70vh; }
+.ad-order-position-card{ border:1px solid #e0ece5 !important; transition:transform .18s ease,box-shadow .18s ease; }
+.ad-order-position-card:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(15,23,42,.10) !important; }
+.ad-order-summary{ top:1.25rem; border-radius:14px; }
+.advertising-region-options{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.15rem .75rem; max-height:240px; overflow:auto; }
+.payment-reference{ padding:1.25rem; border:1px solid #b9ddc8; border-radius:12px; background:#f0faf4; }
+@media (max-width:575px){ .advertising-region-options{ grid-template-columns:1fr; } }
+
 /* ---------- PUBLICIDADE HOME ---------- */
 .ad-marquee{
   overflow:hidden;

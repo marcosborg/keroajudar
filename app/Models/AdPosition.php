@@ -9,7 +9,7 @@ class AdPosition extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code', 'name', 'row', 'sort_order', 'desktop_width', 'desktop_height', 'mobile_width', 'mobile_height', 'active'];
+    protected $fillable = ['code', 'name', 'row', 'sort_order', 'desktop_width', 'desktop_height', 'mobile_width', 'mobile_height', 'daily_price', 'active'];
 
     protected $casts = [
         'active' => 'boolean',
@@ -19,11 +19,17 @@ class AdPosition extends Model
         'desktop_height' => 'integer',
         'mobile_width' => 'integer',
         'mobile_height' => 'integer',
+        'daily_price' => 'decimal:2',
     ];
 
     public function campaigns()
     {
         return $this->hasMany(AdCampaign::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(AdOrder::class);
     }
 
     public function desktopDimensions(): string

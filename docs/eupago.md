@@ -6,6 +6,7 @@
   EUPAGO_API_KEY=xxxx-xxxx-xxxx-xxxx-xxxx
   EUPAGO_SANDBOX=true
   EUPAGO_CALLBACK_URL=https://seusite.pt/api/eupago/callback
+  EUPAGO_ADVERTISING_EXTERN_KEY=IDENTIFICADOR_EUPAGO_DA_PLATAFORMA
   ```
 - `config/eupago.php` controla sandbox, base_url e endpoints.
 - Logging dedicado: `storage/logs/eupago.log` (canal `eupago` em `config/logging.php`).
@@ -70,6 +71,14 @@
 
 ### Como definir beneficiários
 - Cada beneficiário requer `externKey` (identificador externo) e `valor_part`.
+
+## Pedidos de publicidade
+
+- Defina `EUPAGO_ADVERTISING_EXTERN_KEY` com o identificador EuPago que recebe os pagamentos publicitários.
+- Configure o preço diário de cada posição em **Centro publicitário > Posições**.
+- O cliente escolhe a posição, período e segmentação, preenche os dados fiscais e paga por Multibanco ou MB WAY.
+- O total é sempre recalculado no servidor: preço diário × número de dias, incluindo as datas inicial e final.
+- O callback marca o pedido como pago e cria uma campanha em rascunho, sem a publicar antes da validação dos criativos.
 - Garanta que o somatório de `valor_part` é igual ao `valor` total.
 
 ### Como depurar

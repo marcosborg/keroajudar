@@ -6,7 +6,7 @@
                 <span class="advertising-kicker">Parceiros que ajudam a ajudar</span>
                 <h2 id="advertising-center-title">Centro de Publicidade</h2>
             </div>
-            <a href="{{ route('website.contactos') }}" class="btn btn-outline-success">Quero anunciar</a>
+            <a href="{{ route('advertising.orders.index') }}" class="btn btn-outline-success">Quero anunciar</a>
         </div>
 
         <div class="advertising-filters" aria-label="Filtros de publicidade">
@@ -49,7 +49,7 @@
                                     <ins class="adsbygoogle" style="display:block" data-ad-client="{{ config('advertising.adsense.client') }}" data-ad-slot="{{ $slot->adsense_slot }}" data-ad-format="auto" data-full-width-responsive="true"></ins>
                                 </div>
                             @else
-                                <a href="{{ route('website.contactos') }}" class="available-ad">
+                                <a href="{{ route('advertising.orders.create', $slot->position) }}" class="available-ad">
                                     <i class="bi bi-megaphone" aria-hidden="true"></i>
                                     <strong>Anuncie aqui</strong>
                                     <span>{{ $slot->position->desktopDimensions() }}</span>

@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\AdCampaign;
+use App\Models\AdOrder;
 use App\Models\Pedido;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class EuPagoService
@@ -141,6 +144,7 @@ class EuPagoService
 
         if ($pedido->status === 'pago') {
             $this->logError('Webhook duplicado', ['identificador' => $identificador]);
+            $this->confirmAdvertisingOrder($identificador);
             return response('ok', 200);
         }
 
@@ -154,7 +158,46 @@ class EuPagoService
             'callback_payload' => $request->query(),
         ]);
 
+        $this->confirmAdvertisingOrder($identificador);
+
         return response('ok', 200);
+    }
+
+    protected function confirmAdvertisingOrder(string $identifier): void
+    {
+        DB::transaction(function () use ($identifier) {
+            $order = AdOrder::query()
+                ->where('payment_identifier', $identifier)
+                ->lockForUpdate()
+                ->first();
+
+            if (! $order) {
+                return;
+            }
+
+            if (! $order->ad_campaign_id) {
+                $campaign = AdCampaign::create([
+                    'ad_position_id' => $order->ad_position_id,
+                    'advertiser_name' => $order->company_name ?: $order->contact_name,
+                    'title' => $order->campaign_title,
+                    'destination_url' => $order->destination_url,
+                    'status' => AdCampaign::STATUS_DRAFT,
+                    'starts_at' => $order->starts_at->startOfDay(),
+                    'ends_at' => $order->ends_at->endOfDay(),
+                    'targets_all_categories' => $order->targets_all_categories,
+                    'target_categories' => $order->target_categories,
+                    'targets_all_regions' => $order->targets_all_regions,
+                    'target_regions' => $order->target_regions,
+                ]);
+
+                $order->ad_campaign_id = $campaign->id;
+            }
+
+            $order->status = AdOrder::STATUS_PAID;
+            $order->paid_at ??= now();
+            $order->failure_message = null;
+            $order->save();
+        });
     }
 
     protected function post(string $endpoint, array $payload)

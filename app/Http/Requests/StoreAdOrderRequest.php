@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class StoreAdOrderRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'targets_all_categories' => $this->boolean('targets_all_categories'),
+            'targets_all_regions' => $this->boolean('targets_all_regions'),
+            'consent_terms' => $this->boolean('consent_terms'),
+        ]);
+    }
+
+    public function rules(): array
+    {
+        return [
+            'customer_type' => ['required', Rule::in(['individual', 'company'])],
+            'contact_name' => ['required', 'string', 'max:255'],
+            'company_name' => ['nullable', 'required_if:customer_type,company', 'string', 'max:255'],
+            'tax_number' => ['required', 'regex:/^[0-9]{9}$/'],
+            'email' => ['required', 'email:rfc', 'max:255'],
+            'phone' => ['required', 'regex:/^[0-9+ ()-]{9,30}$/'],
+            'address' => ['required', 'string', 'max:255'],
+            'postal_code' => ['required', 'regex:/^[0-9]{4}-[0-9]{3}$/'],
+            'city' => ['required', 'string', 'max:120'],
+            'country' => ['required', 'string', 'max:120'],
+            'campaign_title' => ['required', 'string', 'max:255'],
+            'destination_url' => ['required', 'url:http,https', 'max:2048'],
+            'starts_at' => ['required', 'date', 'after_or_equal:today'],
+            'ends_at' => ['required', 'date', 'after_or_equal:starts_at'],
+            'targets_all_categories' => ['required', 'boolean'],
+            'target_categories' => ['nullable', 'required_if:targets_all_categories,false', 'array', 'min:1'],
+            'target_categories.*' => ['string', Rule::in(array_keys(config('advertising.categories')))],
+            'targets_all_regions' => ['required', 'boolean'],
+            'target_regions' => ['nullable', 'required_if:targets_all_regions,false', 'array', 'min:1'],
+            'target_regions.*' => ['string', Rule::in(array_keys(config('advertising.regions')))],
+            'payment_method' => ['required', Rule::in(['multibanco', 'mbway'])],
+            'mbway_phone' => ['nullable', 'required_if:payment_method,mbway', 'digits:9'],
+            'consent_terms' => ['accepted'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'tax_number.regex' => 'Indique um NIF/NIPC português com 9 algarismos.',
+            'postal_code.regex' => 'Use o formato de código postal 0000-000.',
+            'target_categories.required_if' => 'Selecione pelo menos uma categoria.',
+            'target_regions.required_if' => 'Selecione pelo menos uma região.',
+            'mbway_phone.required_if' => 'Indique o número associado ao MB WAY.',
+            'consent_terms.accepted' => 'Tem de aceitar as condições do pedido.',
+        ];
+    }
+}

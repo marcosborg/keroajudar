@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdvertisingMetricsController;
+use App\Http\Controllers\AdvertisingOrderController;
 use App\Http\Controllers\WebsiteController;
 
 Route::prefix('/')->group(function () {
@@ -16,6 +17,11 @@ Route::post('advertising/impressions', [AdvertisingMetricsController::class, 'im
     ->middleware('throttle:advertising')->name('advertising.impressions');
 Route::get('advertising/click/{token}', [AdvertisingMetricsController::class, 'click'])
     ->middleware('throttle:advertising')->name('advertising.click');
+Route::get('advertising/order', [AdvertisingOrderController::class, 'index'])->name('advertising.orders.index');
+Route::get('advertising/order/status/{order}', [AdvertisingOrderController::class, 'show'])->name('advertising.orders.show');
+Route::get('advertising/order/{position}', [AdvertisingOrderController::class, 'create'])->name('advertising.orders.create');
+Route::post('advertising/order/{position}', [AdvertisingOrderController::class, 'store'])
+    ->middleware('throttle:10,1')->name('advertising.orders.store');
 
 Route::prefix('beneficiarios')->name('beneficiaries.')->group(function () {
     Route::get('/', [\App\Http\Controllers\BeneficiaryPortalController::class, 'index'])->name('index');
@@ -95,6 +101,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('ad-campaigns/media', 'AdCampaignController@storeMedia')->name('ad-campaigns.storeMedia');
     Route::resource('ad-campaigns', 'AdCampaignController')->except(['show']);
     Route::get('ad-positions', 'AdPositionController@index')->name('ad-positions.index');
+    Route::patch('ad-positions/{position}/pricing', 'AdPositionController@updatePricing')->name('ad-positions.pricing');
+    Route::resource('ad-orders', 'AdOrderController')->only(['index', 'show']);
     Route::get('ad-reports', 'AdReportController@index')->name('ad-reports.index');
     Route::get('ad-reports/export', 'AdReportController@export')->name('ad-reports.export');
 
