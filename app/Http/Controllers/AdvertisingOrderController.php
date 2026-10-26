@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAdOrderRequest;
 use App\Models\AdOrder;
 use App\Models\AdPosition;
+use App\Models\Beneficiary;
 use App\Services\EuPagoService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -31,6 +32,11 @@ class AdvertisingOrderController extends Controller
             'position' => $position,
             'categories' => config('advertising.categories'),
             'regions' => config('advertising.regions'),
+            'beneficiaries' => Beneficiary::query()
+                ->where('active', true)
+                ->with('category')
+                ->orderBy('name')
+                ->get(),
             'paymentReady' => $this->paymentReady($position),
         ]);
     }
@@ -57,6 +63,7 @@ class AdvertisingOrderController extends Controller
         $order = AdOrder::create([
             'public_id' => $publicId,
             'ad_position_id' => $position->id,
+            'beneficiary_id' => $validated['beneficiary_id'],
             'payment_identifier' => $paymentIdentifier,
             'status' => AdOrder::STATUS_PAYMENT_PENDING,
             'payment_method' => $validated['payment_method'],

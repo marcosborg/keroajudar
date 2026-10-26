@@ -178,6 +178,7 @@ class EuPagoService
             if (! $order->ad_campaign_id) {
                 $campaign = AdCampaign::create([
                     'ad_position_id' => $order->ad_position_id,
+                    'beneficiary_id' => $order->beneficiary_id,
                     'advertiser_name' => $order->company_name ?: $order->contact_name,
                     'title' => $order->campaign_title,
                     'destination_url' => $order->destination_url,

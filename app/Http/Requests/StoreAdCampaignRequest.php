@@ -22,6 +22,7 @@ class StoreAdCampaignRequest extends FormRequest
     {
         return [
             'ad_position_id' => ['required', 'exists:ad_positions,id'],
+            'beneficiary_id' => ['nullable', 'exists:beneficiaries,id'],
             'advertiser_name' => ['required', 'string', 'max:255'],
             'title' => ['required', 'string', 'max:255'],
             'destination_url' => ['required', 'url', 'max:2048'],

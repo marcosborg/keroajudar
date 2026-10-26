@@ -11,6 +11,9 @@
 <div class="form-group"><label class="required" for="destination_url">URL de destino</label><input type="url" class="form-control" name="destination_url" id="destination_url" required value="{{ old('destination_url', $campaign->destination_url ?? '') }}"></div>
 <div class="row">
 <div class="form-group col-md-6"><label class="required" for="ad_position_id">Posição</label><select class="form-control" name="ad_position_id" id="ad_position_id" required><option value="">Selecione</option>@foreach($positions as $position)<option value="{{ $position->id }}" {{ (string)old('ad_position_id', $campaign->ad_position_id ?? '') === (string)$position->id ? 'selected' : '' }}>{{ $position->name }} — {{ $position->desktopDimensions() }} / {{ $position->mobileDimensions() }}</option>@endforeach</select></div>
+<div class="form-group col-md-6"><label for="beneficiary_id">Associação apoiada</label><select class="form-control select2" name="beneficiary_id" id="beneficiary_id"><option value="">Sem associação</option>@foreach($beneficiaries as $beneficiary)<option value="{{ $beneficiary->id }}" {{ (string)old('beneficiary_id', $campaign->beneficiary_id ?? '') === (string)$beneficiary->id ? 'selected' : '' }}>{{ $beneficiary->name }}</option>@endforeach</select></div>
+</div>
+<div class="row">
 <div class="form-group col-md-6"><label class="required" for="status">Estado</label><select class="form-control" name="status" id="status" required>@foreach($statuses as $value => $label)<option value="{{ $value }}" {{ old('status', $campaign->status ?? 'draft') === $value ? 'selected' : '' }}>{{ $label }}</option>@endforeach</select></div>
 </div>
 <div class="row">

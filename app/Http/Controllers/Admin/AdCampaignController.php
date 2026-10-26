@@ -8,6 +8,7 @@ use App\Http\Requests\StoreAdCampaignRequest;
 use App\Http\Requests\UpdateAdCampaignRequest;
 use App\Models\AdCampaign;
 use App\Models\AdPosition;
+use App\Models\Beneficiary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
@@ -22,7 +23,7 @@ class AdCampaignController extends Controller
     public function index()
     {
         abort_if(Gate::denies('ad_campaign_access'), Response::HTTP_FORBIDDEN);
-        $campaigns = AdCampaign::with(['position', 'media'])
+        $campaigns = AdCampaign::with(['position', 'beneficiary', 'media'])
             ->withSum('metrics', 'impressions')->withSum('metrics', 'clicks')
             ->orderByDesc('starts_at')->get();
 
@@ -88,12 +89,13 @@ class AdCampaignController extends Controller
             'statuses' => AdCampaign::STATUSES,
             'categories' => config('advertising.categories'),
             'regions' => config('advertising.regions'),
+            'beneficiaries' => Beneficiary::query()->where('active', true)->orderBy('name')->get(),
         ];
     }
 
     private function normalizedData(Request $request): array
     {
-        $data = $request->only(['ad_position_id', 'advertiser_name', 'title', 'destination_url', 'status', 'starts_at', 'ends_at']);
+        $data = $request->only(['ad_position_id', 'beneficiary_id', 'advertiser_name', 'title', 'destination_url', 'status', 'starts_at', 'ends_at']);
         $data['targets_all_categories'] = $request->boolean('targets_all_categories');
         $data['target_categories'] = $data['targets_all_categories'] ? null : array_values($request->input('target_categories', []));
         $data['targets_all_regions'] = $request->boolean('targets_all_regions');

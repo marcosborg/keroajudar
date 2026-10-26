@@ -25,7 +25,7 @@ class AdOrder extends Model implements HasMedia
     ];
 
     protected $fillable = [
-        'public_id', 'ad_position_id', 'ad_campaign_id', 'payment_identifier', 'status',
+        'public_id', 'ad_position_id', 'beneficiary_id', 'ad_campaign_id', 'payment_identifier', 'status',
         'payment_method', 'customer_type', 'contact_name', 'company_name', 'tax_number',
         'email', 'phone', 'address', 'postal_code', 'city', 'country', 'campaign_title',
         'destination_url', 'starts_at', 'ends_at', 'targets_all_categories',
@@ -61,6 +61,11 @@ class AdOrder extends Model implements HasMedia
     public function campaign()
     {
         return $this->belongsTo(AdCampaign::class, 'ad_campaign_id');
+    }
+
+    public function beneficiary()
+    {
+        return $this->belongsTo(Beneficiary::class);
     }
 
     public function payment()

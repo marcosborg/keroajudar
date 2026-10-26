@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\AdCampaign;
 use App\Models\AdOrder;
 use App\Models\AdPosition;
+use App\Models\Beneficiary;
+use App\Models\BeneficiaryCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
@@ -14,6 +16,8 @@ use Tests\TestCase;
 class AdvertisingOrderTest extends TestCase
 {
     use RefreshDatabase;
+
+    private Beneficiary $beneficiary;
 
     protected function setUp(): void
     {
@@ -25,6 +29,13 @@ class AdvertisingOrderTest extends TestCase
             'eupago.advertising_extern_key' => 'KERO-ADS',
         ]);
         Storage::fake('public');
+
+        $category = BeneficiaryCategory::create(['name' => 'Apoio animal']);
+        $this->beneficiary = Beneficiary::create([
+            'beneficiary_category_id' => $category->id,
+            'name' => 'Associação Patas Felizes',
+            'active' => true,
+        ]);
     }
 
     /** @test */
@@ -46,6 +57,7 @@ class AdvertisingOrderTest extends TestCase
         $response->assertRedirect(route('advertising.orders.show', $order));
         $this->assertSame(3, $order->billable_days);
         $this->assertSame('30.00', $order->amount);
+        $this->assertTrue($order->beneficiary->is($this->beneficiary));
         $this->assertCount(1, $order->getMedia('desktop_creative'));
         $this->assertCount(1, $order->getMedia('mobile_creative'));
         $this->assertDatabaseHas('pedidos', [
@@ -89,6 +101,7 @@ class AdvertisingOrderTest extends TestCase
         $this->assertDatabaseCount('ad_campaigns', 1);
         $this->assertSame(AdCampaign::STATUS_DRAFT, $order->campaign->status);
         $this->assertSame('Empresa Exemplo', $order->campaign->advertiser_name);
+        $this->assertTrue($order->campaign->beneficiary->is($this->beneficiary));
         $this->assertCount(1, $order->campaign->getMedia('desktop_creative'));
         $this->assertCount(1, $order->campaign->getMedia('mobile_creative'));
     }
@@ -120,6 +133,19 @@ class AdvertisingOrderTest extends TestCase
         $this->assertDatabaseCount('ad_orders', 0);
     }
 
+    /** @test */
+    public function the_customer_must_choose_an_active_association(): void
+    {
+        $position = AdPosition::query()->where('code', 'home-05')->firstOrFail();
+        $position->update(['daily_price' => 10]);
+        $this->beneficiary->update(['active' => false]);
+
+        $this->post(route('advertising.orders.store', $position), $this->validPayload($position))
+            ->assertSessionHasErrors('beneficiary_id');
+
+        $this->assertDatabaseCount('ad_orders', 0);
+    }
+
     private function validPayload(AdPosition $position): array
     {
         return [
@@ -135,6 +161,7 @@ class AdvertisingOrderTest extends TestCase
             'country' => 'Portugal',
             'campaign_title' => 'Campanha de teste',
             'destination_url' => 'https://example.com/campanha',
+            'beneficiary_id' => $this->beneficiary->id,
             'desktop_creative' => UploadedFile::fake()->image('desktop.png', $position->desktop_width, $position->desktop_height),
             'mobile_creative' => UploadedFile::fake()->image('mobile.png', $position->mobile_width, $position->mobile_height),
             'starts_at' => now()->toDateString(),

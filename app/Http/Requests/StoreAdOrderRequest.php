@@ -42,6 +42,12 @@ class StoreAdOrderRequest extends FormRequest
             'country' => ['required', 'string', 'max:120'],
             'campaign_title' => ['required', 'string', 'max:255'],
             'destination_url' => ['required', 'url:http,https', 'max:2048'],
+            'beneficiary_id' => [
+                'required',
+                Rule::exists('beneficiaries', 'id')->where(fn ($query) => $query
+                    ->where('active', true)
+                    ->whereNull('deleted_at')),
+            ],
             'desktop_creative' => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120', "dimensions:width={$desktopWidth},height={$desktopHeight}"],
             'mobile_creative' => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120', "dimensions:width={$mobileWidth},height={$mobileHeight}"],
             'starts_at' => ['required', 'date', 'after_or_equal:today'],
@@ -67,6 +73,8 @@ class StoreAdOrderRequest extends FormRequest
             'target_regions.required_if' => 'Selecione pelo menos uma região.',
             'mbway_phone.required_if' => 'Indique o número associado ao MB WAY.',
             'consent_terms.accepted' => 'Tem de aceitar as condições do pedido.',
+            'beneficiary_id.required' => 'Escolha a associação que pretende apoiar.',
+            'beneficiary_id.exists' => 'A associação escolhida não está disponível.',
             'desktop_creative.required' => 'Carregue o criativo para desktop.',
             'desktop_creative.image' => 'O criativo desktop tem de ser uma imagem.',
             'desktop_creative.mimes' => 'O criativo desktop tem de ser JPEG, PNG ou WebP.',

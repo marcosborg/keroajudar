@@ -6,9 +6,9 @@
 <div class="card">
     <div class="card-header">Campanhas do centro publicitário</div>
     <div class="card-body"><div class="table-responsive"><table class="table table-bordered table-striped table-hover">
-        <thead><tr><th>Campanha</th><th>Anunciante</th><th>Posição</th><th>Estado</th><th>Período</th><th>Impressões</th><th>Cliques</th><th></th></tr></thead>
+        <thead><tr><th>Campanha</th><th>Anunciante</th><th>Associação</th><th>Posição</th><th>Estado</th><th>Período</th><th>Impressões</th><th>Cliques</th><th></th></tr></thead>
         <tbody>@foreach($campaigns as $campaign)<tr>
-            <td>{{ $campaign->title }}</td><td>{{ $campaign->advertiser_name }}</td><td>{{ $campaign->position->name }}</td>
+            <td>{{ $campaign->title }}</td><td>{{ $campaign->advertiser_name }}</td><td>{{ $campaign->beneficiary?->name ?? '—' }}</td><td>{{ $campaign->position->name }}</td>
             <td>{{ \App\Models\AdCampaign::STATUSES[$campaign->status] ?? $campaign->status }}</td>
             <td>{{ $campaign->starts_at->format('d-m-Y H:i') }}<br>{{ $campaign->ends_at->format('d-m-Y H:i') }}</td>
             <td>{{ number_format($campaign->metrics_sum_impressions ?? 0, 0, ',', '.') }}</td><td>{{ number_format($campaign->metrics_sum_clicks ?? 0, 0, ',', '.') }}</td>

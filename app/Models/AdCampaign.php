@@ -26,7 +26,7 @@ class AdCampaign extends Model implements HasMedia
     ];
 
     protected $fillable = [
-        'ad_position_id', 'advertiser_name', 'title', 'destination_url', 'status',
+        'ad_position_id', 'beneficiary_id', 'advertiser_name', 'title', 'destination_url', 'status',
         'starts_at', 'ends_at', 'targets_all_categories', 'target_categories',
         'targets_all_regions', 'target_regions',
     ];
@@ -45,6 +45,11 @@ class AdCampaign extends Model implements HasMedia
     public function position()
     {
         return $this->belongsTo(AdPosition::class, 'ad_position_id');
+    }
+
+    public function beneficiary()
+    {
+        return $this->belongsTo(Beneficiary::class);
     }
 
     public function metrics()

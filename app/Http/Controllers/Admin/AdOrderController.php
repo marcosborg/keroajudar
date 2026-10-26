@@ -14,7 +14,7 @@ class AdOrderController extends Controller
         abort_if(Gate::denies('ad_campaign_access'), Response::HTTP_FORBIDDEN);
 
         $orders = AdOrder::query()
-            ->with(['position', 'payment'])
+            ->with(['position', 'beneficiary', 'payment'])
             ->latest()
             ->paginate(30);
 
@@ -24,7 +24,7 @@ class AdOrderController extends Controller
     public function show(AdOrder $adOrder)
     {
         abort_if(Gate::denies('ad_campaign_access'), Response::HTTP_FORBIDDEN);
-        $adOrder->load(['position', 'payment', 'campaign']);
+        $adOrder->load(['position', 'beneficiary', 'payment', 'campaign']);
 
         return view('admin.adOrders.show', compact('adOrder'));
     }

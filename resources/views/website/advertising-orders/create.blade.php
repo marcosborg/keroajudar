@@ -36,6 +36,16 @@
 
                         <h2 class="h5 mt-5">Campanha</h2>
                         <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label" for="beneficiary_id">Associação apoiada</label>
+                                <select class="form-select" name="beneficiary_id" id="beneficiary_id" required>
+                                    <option value="">Escolha uma associação</option>
+                                    @foreach($beneficiaries as $beneficiary)
+                                        <option value="{{ $beneficiary->id }}" @selected((string) old('beneficiary_id') === (string) $beneficiary->id)>{{ $beneficiary->name }}@if($beneficiary->category) — {{ $beneficiary->category->name }}@endif</option>
+                                    @endforeach
+                                </select>
+                                <div class="form-text">A associação escolhida ficará associada a esta campanha.</div>
+                            </div>
                             <div class="col-12"><label class="form-label" for="campaign_title">Nome da campanha</label><input class="form-control" id="campaign_title" name="campaign_title" value="{{ old('campaign_title') }}" required></div>
                             <div class="col-12"><label class="form-label" for="destination_url">Endereço de destino</label><input class="form-control" type="url" id="destination_url" name="destination_url" placeholder="https://" value="{{ old('destination_url') }}" required></div>
                             <div class="col-md-6">
