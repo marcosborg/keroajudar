@@ -23,6 +23,12 @@ class StoreAdOrderRequest extends FormRequest
 
     public function rules(): array
     {
+        $position = $this->route('position');
+        $desktopWidth = (int) $position->desktop_width;
+        $desktopHeight = (int) $position->desktop_height;
+        $mobileWidth = (int) $position->mobile_width;
+        $mobileHeight = (int) $position->mobile_height;
+
         return [
             'customer_type' => ['required', Rule::in(['individual', 'company'])],
             'contact_name' => ['required', 'string', 'max:255'],
@@ -36,6 +42,8 @@ class StoreAdOrderRequest extends FormRequest
             'country' => ['required', 'string', 'max:120'],
             'campaign_title' => ['required', 'string', 'max:255'],
             'destination_url' => ['required', 'url:http,https', 'max:2048'],
+            'desktop_creative' => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120', "dimensions:width={$desktopWidth},height={$desktopHeight}"],
+            'mobile_creative' => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120', "dimensions:width={$mobileWidth},height={$mobileHeight}"],
             'starts_at' => ['required', 'date', 'after_or_equal:today'],
             'ends_at' => ['required', 'date', 'after_or_equal:starts_at'],
             'targets_all_categories' => ['required', 'boolean'],
@@ -59,6 +67,16 @@ class StoreAdOrderRequest extends FormRequest
             'target_regions.required_if' => 'Selecione pelo menos uma região.',
             'mbway_phone.required_if' => 'Indique o número associado ao MB WAY.',
             'consent_terms.accepted' => 'Tem de aceitar as condições do pedido.',
+            'desktop_creative.required' => 'Carregue o criativo para desktop.',
+            'desktop_creative.image' => 'O criativo desktop tem de ser uma imagem.',
+            'desktop_creative.mimes' => 'O criativo desktop tem de ser JPEG, PNG ou WebP.',
+            'desktop_creative.max' => 'O criativo desktop não pode exceder 5 MB.',
+            'desktop_creative.dimensions' => 'O criativo desktop tem de ter exatamente :width×:height píxeis.',
+            'mobile_creative.required' => 'Carregue o criativo para telemóvel.',
+            'mobile_creative.image' => 'O criativo mobile tem de ser uma imagem.',
+            'mobile_creative.mimes' => 'O criativo mobile tem de ser JPEG, PNG ou WebP.',
+            'mobile_creative.max' => 'O criativo mobile não pode exceder 5 MB.',
+            'mobile_creative.dimensions' => 'O criativo mobile tem de ter exatamente :width×:height píxeis.',
         ];
     }
 }

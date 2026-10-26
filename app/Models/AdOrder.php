@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class AdOrder extends Model
+class AdOrder extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
 
     public const STATUS_PAYMENT_PENDING = 'payment_pending';
     public const STATUS_PAYMENT_FAILED = 'payment_failed';
@@ -43,6 +46,8 @@ class AdOrder extends Model
         'paid_at' => 'datetime',
     ];
 
+    protected $appends = ['desktop_creative', 'mobile_creative'];
+
     public function getRouteKeyName(): string
     {
         return 'public_id';
@@ -61,5 +66,32 @@ class AdOrder extends Model
     public function payment()
     {
         return $this->hasOne(Pedido::class, 'identificador', 'payment_identifier');
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')->fit('max', 320, 180)
+            ->performOnCollections('desktop_creative', 'mobile_creative');
+    }
+
+    public function getDesktopCreativeAttribute()
+    {
+        return $this->creativeFile('desktop_creative');
+    }
+
+    public function getMobileCreativeAttribute()
+    {
+        return $this->creativeFile('mobile_creative');
+    }
+
+    private function creativeFile(string $collection)
+    {
+        $file = $this->getMedia($collection)->last();
+        if ($file) {
+            $file->url = $file->getUrl();
+            $file->thumbnail = $file->getUrl('thumb');
+        }
+
+        return $file;
     }
 }

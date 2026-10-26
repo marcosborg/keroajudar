@@ -84,6 +84,9 @@ class AdvertisingOrderController extends Controller
             'consent_terms' => true,
         ]);
 
+        $order->addMediaFromRequest('desktop_creative')->toMediaCollection('desktop_creative');
+        $order->addMediaFromRequest('mobile_creative')->toMediaCollection('mobile_creative');
+
         $paymentData = [
             'valor' => $amount,
             'identificador' => $paymentIdentifier,

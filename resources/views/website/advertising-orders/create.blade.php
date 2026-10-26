@@ -18,7 +18,7 @@
                         <div class="alert alert-danger"><strong>Reveja os dados indicados.</strong><ul class="mb-0 mt-2">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
                     @endif
 
-                    <form method="POST" action="{{ route('advertising.orders.store', $position) }}" id="ad-order-form">
+                    <form method="POST" action="{{ route('advertising.orders.store', $position) }}" id="ad-order-form" enctype="multipart/form-data">
                         @csrf
                         <h2 class="h5 mt-4">Dados de faturação e contacto</h2>
                         <div class="row g-3">
@@ -38,6 +38,16 @@
                         <div class="row g-3">
                             <div class="col-12"><label class="form-label" for="campaign_title">Nome da campanha</label><input class="form-control" id="campaign_title" name="campaign_title" value="{{ old('campaign_title') }}" required></div>
                             <div class="col-12"><label class="form-label" for="destination_url">Endereço de destino</label><input class="form-control" type="url" id="destination_url" name="destination_url" placeholder="https://" value="{{ old('destination_url') }}" required></div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="desktop_creative">Criativo desktop</label>
+                                <input class="form-control" type="file" id="desktop_creative" name="desktop_creative" accept="image/jpeg,image/png,image/webp" required>
+                                <div class="form-text">JPEG, PNG ou WebP com exatamente <strong>{{ $position->desktopDimensions() }} px</strong> e até 5 MB.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="mobile_creative">Criativo para telemóvel</label>
+                                <input class="form-control" type="file" id="mobile_creative" name="mobile_creative" accept="image/jpeg,image/png,image/webp" required>
+                                <div class="form-text">JPEG, PNG ou WebP com exatamente <strong>{{ $position->mobileDimensions() }} px</strong> e até 5 MB.</div>
+                            </div>
                             <div class="col-md-6"><label class="form-label" for="starts_at">Data inicial</label><input class="form-control" type="date" id="starts_at" name="starts_at" min="{{ now()->toDateString() }}" value="{{ old('starts_at', now()->toDateString()) }}" required></div>
                             <div class="col-md-6"><label class="form-label" for="ends_at">Data final</label><input class="form-control" type="date" id="ends_at" name="ends_at" min="{{ now()->toDateString() }}" value="{{ old('ends_at', now()->addDays(29)->toDateString()) }}" required></div>
                         </div>

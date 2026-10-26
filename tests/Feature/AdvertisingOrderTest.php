@@ -6,7 +6,9 @@ use App\Models\AdCampaign;
 use App\Models\AdOrder;
 use App\Models\AdPosition;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AdvertisingOrderTest extends TestCase
@@ -22,6 +24,7 @@ class AdvertisingOrderTest extends TestCase
             'eupago.api_key' => 'test-api-key',
             'eupago.advertising_extern_key' => 'KERO-ADS',
         ]);
+        Storage::fake('public');
     }
 
     /** @test */
@@ -37,12 +40,14 @@ class AdvertisingOrderTest extends TestCase
         $position = AdPosition::query()->where('code', 'home-01')->firstOrFail();
         $position->update(['daily_price' => 10]);
 
-        $response = $this->post(route('advertising.orders.store', $position), $this->validPayload());
+        $response = $this->post(route('advertising.orders.store', $position), $this->validPayload($position));
 
         $order = AdOrder::query()->firstOrFail();
         $response->assertRedirect(route('advertising.orders.show', $order));
         $this->assertSame(3, $order->billable_days);
         $this->assertSame('30.00', $order->amount);
+        $this->assertCount(1, $order->getMedia('desktop_creative'));
+        $this->assertCount(1, $order->getMedia('mobile_creative'));
         $this->assertDatabaseHas('pedidos', [
             'identificador' => $order->payment_identifier,
             'entidade' => '12345',
@@ -61,7 +66,7 @@ class AdvertisingOrderTest extends TestCase
 
         $position = AdPosition::query()->where('code', 'home-02')->firstOrFail();
         $position->update(['daily_price' => 5]);
-        $payload = $this->validPayload() + ['payment_method' => 'mbway', 'mbway_phone' => '911111111'];
+        $payload = $this->validPayload($position) + ['payment_method' => 'mbway', 'mbway_phone' => '911111111'];
         $payload['payment_method'] = 'mbway';
         $payload['mbway_phone'] = '911111111';
 
@@ -84,6 +89,8 @@ class AdvertisingOrderTest extends TestCase
         $this->assertDatabaseCount('ad_campaigns', 1);
         $this->assertSame(AdCampaign::STATUS_DRAFT, $order->campaign->status);
         $this->assertSame('Empresa Exemplo', $order->campaign->advertiser_name);
+        $this->assertCount(1, $order->campaign->getMedia('desktop_creative'));
+        $this->assertCount(1, $order->campaign->getMedia('mobile_creative'));
     }
 
     /** @test */
@@ -92,13 +99,28 @@ class AdvertisingOrderTest extends TestCase
         $position = AdPosition::query()->where('code', 'home-03')->firstOrFail();
         $position->update(['daily_price' => null]);
 
-        $this->post(route('advertising.orders.store', $position), $this->validPayload())
+        $this->post(route('advertising.orders.store', $position), $this->validPayload($position))
             ->assertStatus(503);
 
         $this->assertDatabaseCount('ad_orders', 0);
     }
 
-    private function validPayload(): array
+    /** @test */
+    public function creatives_must_match_the_exact_desktop_and_mobile_dimensions(): void
+    {
+        $position = AdPosition::query()->where('code', 'home-04')->firstOrFail();
+        $position->update(['daily_price' => 10]);
+        $payload = $this->validPayload($position);
+        $payload['desktop_creative'] = UploadedFile::fake()->image('wrong.png', 301, 250);
+        $payload['mobile_creative'] = UploadedFile::fake()->image('wrong-mobile.png', 320, 99);
+
+        $this->post(route('advertising.orders.store', $position), $payload)
+            ->assertSessionHasErrors(['desktop_creative', 'mobile_creative']);
+
+        $this->assertDatabaseCount('ad_orders', 0);
+    }
+
+    private function validPayload(AdPosition $position): array
     {
         return [
             'customer_type' => 'company',
@@ -113,6 +135,8 @@ class AdvertisingOrderTest extends TestCase
             'country' => 'Portugal',
             'campaign_title' => 'Campanha de teste',
             'destination_url' => 'https://example.com/campanha',
+            'desktop_creative' => UploadedFile::fake()->image('desktop.png', $position->desktop_width, $position->desktop_height),
+            'mobile_creative' => UploadedFile::fake()->image('mobile.png', $position->mobile_width, $position->mobile_height),
             'starts_at' => now()->toDateString(),
             'ends_at' => now()->addDays(2)->toDateString(),
             'targets_all_categories' => '1',

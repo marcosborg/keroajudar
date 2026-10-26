@@ -190,6 +190,9 @@ class EuPagoService
                     'target_regions' => $order->target_regions,
                 ]);
 
+                $order->getMedia('desktop_creative')->last()?->copy($campaign, 'desktop_creative');
+                $order->getMedia('mobile_creative')->last()?->copy($campaign, 'mobile_creative');
+
                 $order->ad_campaign_id = $campaign->id;
             }
 
