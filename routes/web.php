@@ -9,6 +9,9 @@ Route::prefix('/')->group(function () {
     Route::get('donativo', [WebsiteController::class, 'donativo'])->name('website.donativo');
     Route::get('beneficiario/{beneficiary}/{slug?}', [WebsiteController::class, 'beneficiaryDonation'])->name('website.beneficiary.donate');
     Route::post('beneficiario/{beneficiary}/{slug?}', [WebsiteController::class, 'beneficiaryDonate'])->name('website.beneficiary.donate.store');
+    Route::get('r/associacao/{beneficiary}', [WebsiteController::class, 'beneficiaryReferral'])
+        ->middleware(['signed', 'throttle:60,1'])
+        ->name('website.beneficiary.referral');
     Route::get('quem-somos', [WebsiteController::class, 'quemSomos'])->name('website.quem-somos');
     Route::get('contactos', [WebsiteController::class, 'contactos'])->name('website.contactos');
 });

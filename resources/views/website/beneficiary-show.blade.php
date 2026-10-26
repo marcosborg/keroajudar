@@ -33,7 +33,7 @@
                     <div class="hero-actions">
                         <a class="btn btn-success" href="#donationForm">Fazer Donativo</a>
                         @if($advertisingPositions->isNotEmpty())<a class="btn btn-outline-light" href="#advertisingPositions">Comprar publicidade</a>@endif
-                        <button class="btn btn-outline-light" type="button" onclick="navigator.clipboard.writeText('{{ $shareUrl }}')">Partilhar</button>
+                        <button class="btn btn-outline-light" type="button" id="copyTrackedLink" data-url="{{ $trackedShareUrl }}"><i class="bi bi-link-45deg"></i> <span>Copiar link com rastreio</span></button>
                     </div>
                 </div>
             </div>
@@ -361,6 +361,27 @@
         const confirmBtn = document.getElementById('confirmSandbox');
         const sandboxAmount = document.getElementById('sandboxAmount');
         const form = document.getElementById('donationFormElement');
+        const copyTrackedLink = document.getElementById('copyTrackedLink');
+
+        if (copyTrackedLink) {
+            copyTrackedLink.addEventListener('click', async () => {
+                const label = copyTrackedLink.querySelector('span');
+                try {
+                    await navigator.clipboard.writeText(copyTrackedLink.dataset.url);
+                } catch (error) {
+                    const field = document.createElement('textarea');
+                    field.value = copyTrackedLink.dataset.url;
+                    field.style.position = 'fixed';
+                    field.style.opacity = '0';
+                    document.body.appendChild(field);
+                    field.select();
+                    document.execCommand('copy');
+                    field.remove();
+                }
+                label.textContent = 'Link copiado!';
+                window.setTimeout(() => label.textContent = 'Copiar link com rastreio', 2200);
+            });
+        }
         const adPosition = document.getElementById('beneficiaryAdPosition');
         const adPositionButton = document.getElementById('openBeneficiaryAdPosition');
 

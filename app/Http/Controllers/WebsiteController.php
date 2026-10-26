@@ -16,6 +16,7 @@ use App\Services\HomeAdvertisingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 class WebsiteController extends Controller
@@ -90,11 +91,37 @@ class WebsiteController extends Controller
         return view('website.beneficiary-show', [
             'beneficiary' => $beneficiary,
             'shareUrl' => route('website.beneficiary.donate', ['beneficiary' => $beneficiary->id, 'slug' => $expectedSlug]),
+            'trackedShareUrl' => URL::signedRoute('website.beneficiary.referral', ['beneficiary' => $beneficiary]),
             'activeGame' => $activeGame,
             'rules' => $rules,
             'commissionPercent' => $this->resolveCommissionPercent($beneficiary, $activeGame),
             'stats' => $stats,
             'advertisingPositions' => $advertisingPositions,
+        ]);
+    }
+
+    public function beneficiaryReferral(Beneficiary $beneficiary)
+    {
+        abort_unless($beneficiary->active, 404);
+
+        DB::table('beneficiary_referral_metrics')->insertOrIgnore([
+            'beneficiary_id' => $beneficiary->id,
+            'metric_date' => now()->toDateString(),
+            'visits' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('beneficiary_referral_metrics')
+            ->where('beneficiary_id', $beneficiary->id)
+            ->where('metric_date', now()->toDateString())
+            ->increment('visits', 1, ['updated_at' => now()]);
+
+        return redirect()->route('website.beneficiary.donate', [
+            'beneficiary' => $beneficiary,
+            'slug' => Str::slug($beneficiary->name),
+            'utm_source' => 'association',
+            'utm_medium' => 'referral',
+            'utm_campaign' => 'beneficiary-'.$beneficiary->id,
         ]);
     }
 

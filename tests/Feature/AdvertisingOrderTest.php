@@ -10,6 +10,7 @@ use App\Models\BeneficiaryCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -209,6 +210,33 @@ class AdvertisingOrderTest extends TestCase
         $this->get(route('advertising.orders.create', $position))->assertOk()
             ->assertSee('Escolha uma associação')
             ->assertSee($this->beneficiary->name);
+    }
+
+    /** @test */
+    public function the_association_can_copy_a_signed_link_that_tracks_visits_without_personal_data(): void
+    {
+        $pageUrl = route('website.beneficiary.donate', [
+            'beneficiary' => $this->beneficiary,
+            'slug' => Str::slug($this->beneficiary->name),
+        ]);
+        $trackedUrl = URL::signedRoute('website.beneficiary.referral', [
+            'beneficiary' => $this->beneficiary,
+        ]);
+
+        $this->get($pageUrl)->assertOk()->assertSee('Copiar link com rastreio');
+        $this->get($trackedUrl)->assertRedirect($pageUrl.'?'.http_build_query([
+            'utm_source' => 'association',
+            'utm_medium' => 'referral',
+            'utm_campaign' => 'beneficiary-'.$this->beneficiary->id,
+        ]));
+        $this->get($trackedUrl)->assertRedirect();
+
+        $this->assertDatabaseHas('beneficiary_referral_metrics', [
+            'beneficiary_id' => $this->beneficiary->id,
+            'metric_date' => now()->toDateString(),
+            'visits' => 2,
+        ]);
+        $this->assertNotContains('ip_address', Schema::getColumnListing('beneficiary_referral_metrics'));
     }
 
     private function validPayload(AdPosition $position): array
