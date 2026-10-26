@@ -11,6 +11,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class AdvertisingOrderTest extends TestCase
@@ -144,6 +146,69 @@ class AdvertisingOrderTest extends TestCase
             ->assertSessionHasErrors('beneficiary_id');
 
         $this->assertDatabaseCount('ad_orders', 0);
+    }
+
+    /** @test */
+    public function an_association_page_links_to_the_position_with_a_locked_beneficiary(): void
+    {
+        $position = AdPosition::query()->where('code', 'home-06')->firstOrFail();
+        $position->update(['daily_price' => 12.50]);
+
+        $this->get(route('website.beneficiary.donate', [
+            'beneficiary' => $this->beneficiary,
+            'slug' => Str::slug($this->beneficiary->name),
+        ]))->assertOk()
+            ->assertSee('Comprar uma posição publicitária')
+            ->assertSee($position->desktopDimensions());
+
+        $signedUrl = URL::signedRoute('advertising.orders.create', [
+            'position' => $position,
+            'beneficiary' => $this->beneficiary,
+        ]);
+
+        $this->get($signedUrl)->assertOk()
+            ->assertSee($this->beneficiary->name)
+            ->assertSee('não pode ser alterada')
+            ->assertDontSee('Escolha uma associação');
+    }
+
+    /** @test */
+    public function a_signed_association_referral_cannot_be_changed_during_checkout(): void
+    {
+        Http::fake(['*' => Http::response([
+            'entidade' => '12345',
+            'referencia' => '123456789',
+            'codigo' => 0,
+            'mp' => 'PC:PT',
+        ])]);
+
+        $other = Beneficiary::create([
+            'beneficiary_category_id' => $this->beneficiary->beneficiary_category_id,
+            'name' => 'Outra Associação',
+            'active' => true,
+        ]);
+        $position = AdPosition::query()->where('code', 'home-07')->firstOrFail();
+        $position->update(['daily_price' => 10]);
+        $signedUrl = URL::signedRoute('advertising.orders.create', [
+            'position' => $position,
+            'beneficiary' => $this->beneficiary,
+        ]);
+        $payload = $this->validPayload($position);
+        $payload['beneficiary_id'] = $other->id;
+
+        $this->post($signedUrl, $payload)->assertRedirect();
+
+        $this->assertTrue(AdOrder::query()->firstOrFail()->beneficiary->is($this->beneficiary));
+    }
+
+    /** @test */
+    public function a_direct_visitor_can_choose_an_association(): void
+    {
+        $position = AdPosition::query()->where('code', 'home-08')->firstOrFail();
+
+        $this->get(route('advertising.orders.create', $position))->assertOk()
+            ->assertSee('Escolha uma associação')
+            ->assertSee($this->beneficiary->name);
     }
 
     private function validPayload(AdPosition $position): array

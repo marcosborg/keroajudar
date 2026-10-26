@@ -9,16 +9,26 @@ class StoreAdOrderRequest extends FormRequest
 {
     public function authorize(): bool
     {
+        if ($this->has('beneficiary') && ! $this->hasValidSignature()) {
+            abort(403, 'A ligação da associação não é válida.');
+        }
+
         return true;
     }
 
     protected function prepareForValidation(): void
     {
-        $this->merge([
+        $prepared = [
             'targets_all_categories' => $this->boolean('targets_all_categories'),
             'targets_all_regions' => $this->boolean('targets_all_regions'),
             'consent_terms' => $this->boolean('consent_terms'),
-        ]);
+        ];
+
+        if ($this->has('beneficiary') && $this->hasValidSignature()) {
+            $prepared['beneficiary_id'] = $this->query('beneficiary');
+        }
+
+        $this->merge($prepared);
     }
 
     public function rules(): array

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBeneficiaryDonationRequest;
 use App\Models\Advertisement;
+use App\Models\AdPosition;
 use App\Models\Beneficiary;
 use App\Models\BeneficiaryCategory;
 use App\Models\Entry;
@@ -78,6 +79,14 @@ class WebsiteController extends Controller
             'numbers' => RaffleNumber::query()->whereIn('entry_id', $entryQuery->pluck('id'))->count(),
         ];
 
+        $advertisingPositions = config('advertising.booking_enabled') && Schema::hasTable('ad_positions')
+            ? AdPosition::query()
+                ->where('active', true)
+                ->where('daily_price', '>', 0)
+                ->orderBy('sort_order')
+                ->get()
+            : collect();
+
         return view('website.beneficiary-show', [
             'beneficiary' => $beneficiary,
             'shareUrl' => route('website.beneficiary.donate', ['beneficiary' => $beneficiary->id, 'slug' => $expectedSlug]),
@@ -85,6 +94,7 @@ class WebsiteController extends Controller
             'rules' => $rules,
             'commissionPercent' => $this->resolveCommissionPercent($beneficiary, $activeGame),
             'stats' => $stats,
+            'advertisingPositions' => $advertisingPositions,
         ]);
     }
 

@@ -24,19 +24,22 @@ class AdvertisingOrderController extends Controller
         return view('website.advertising-orders.index', compact('positions'));
     }
 
-    public function create(AdPosition $position)
+    public function create(Request $request, AdPosition $position)
     {
         abort_unless(config('advertising.booking_enabled') && $position->active, 404);
+
+        $lockedBeneficiary = $this->referralBeneficiary($request);
 
         return view('website.advertising-orders.create', [
             'position' => $position,
             'categories' => config('advertising.categories'),
             'regions' => config('advertising.regions'),
-            'beneficiaries' => Beneficiary::query()
-                ->where('active', true)
-                ->with('category')
-                ->orderBy('name')
-                ->get(),
+            'beneficiaries' => $lockedBeneficiary ? collect() : Beneficiary::query()
+                    ->where('active', true)
+                    ->with('category')
+                    ->orderBy('name')
+                    ->get(),
+            'lockedBeneficiary' => $lockedBeneficiary,
             'paymentReady' => $this->paymentReady($position),
         ]);
     }
@@ -141,5 +144,19 @@ class AdvertisingOrderController extends Controller
         return (float) $position->daily_price > 0
             && filled(config('eupago.api_key'))
             && filled(config('eupago.advertising_extern_key'));
+    }
+
+    private function referralBeneficiary(Request $request): ?Beneficiary
+    {
+        if (! $request->has('beneficiary')) {
+            return null;
+        }
+
+        abort_unless($request->hasValidSignature(), 403, 'A ligação da associação não é válida.');
+
+        return Beneficiary::query()
+            ->whereKey($request->integer('beneficiary'))
+            ->where('active', true)
+            ->firstOrFail();
     }
 }

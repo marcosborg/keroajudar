@@ -32,6 +32,7 @@
                     </div>
                     <div class="hero-actions">
                         <a class="btn btn-success" href="#donationForm">Fazer Donativo</a>
+                        @if($advertisingPositions->isNotEmpty())<a class="btn btn-outline-light" href="#advertisingPositions">Comprar publicidade</a>@endif
                         <button class="btn btn-outline-light" type="button" onclick="navigator.clipboard.writeText('{{ $shareUrl }}')">Partilhar</button>
                     </div>
                 </div>
@@ -288,6 +289,21 @@
                         @endif
                     </div>
 
+                    @if($advertisingPositions->isNotEmpty())
+                        <div class="contact-card" id="advertisingPositions">
+                            <h4>Comprar uma posição publicitária</h4>
+                            <p class="text-muted">Escolha a posição. A campanha ficará automaticamente associada a <strong>{{ $beneficiary->name }}</strong>.</p>
+                            <label class="form-label" for="beneficiaryAdPosition">Posição pretendida</label>
+                            <select class="form-select" id="beneficiaryAdPosition">
+                                <option value="">Escolha uma posição</option>
+                                @foreach($advertisingPositions as $position)
+                                    <option value="{{ URL::signedRoute('advertising.orders.create', ['position' => $position, 'beneficiary' => $beneficiary]) }}">{{ $position->name }} — {{ $position->desktopDimensions() }} — {{ number_format((float) $position->daily_price, 2, ',', '.') }} €/dia</option>
+                                @endforeach
+                            </select>
+                            <button class="btn btn-success w-100 mt-3" type="button" id="openBeneficiaryAdPosition" disabled>Continuar para a compra</button>
+                        </div>
+                    @endif
+
                     <div class="contact-card">
                         <h4>Contacto</h4>
                         <p class="text-muted mb-2">Fale diretamente com o beneficiario.</p>
@@ -345,6 +361,17 @@
         const confirmBtn = document.getElementById('confirmSandbox');
         const sandboxAmount = document.getElementById('sandboxAmount');
         const form = document.getElementById('donationFormElement');
+        const adPosition = document.getElementById('beneficiaryAdPosition');
+        const adPositionButton = document.getElementById('openBeneficiaryAdPosition');
+
+        if (adPosition && adPositionButton) {
+            adPosition.addEventListener('change', () => {
+                adPositionButton.disabled = !adPosition.value;
+            });
+            adPositionButton.addEventListener('click', () => {
+                if (adPosition.value) window.location.assign(adPosition.value);
+            });
+        }
 
         function syncAmount(value) {
             amountInput.value = value;

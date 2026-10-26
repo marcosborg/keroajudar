@@ -18,7 +18,7 @@
                         <div class="alert alert-danger"><strong>Reveja os dados indicados.</strong><ul class="mb-0 mt-2">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
                     @endif
 
-                    <form method="POST" action="{{ route('advertising.orders.store', $position) }}" id="ad-order-form" enctype="multipart/form-data">
+                    <form method="POST" action="{{ $lockedBeneficiary ? request()->fullUrl() : route('advertising.orders.store', $position) }}" id="ad-order-form" enctype="multipart/form-data">
                         @csrf
                         <h2 class="h5 mt-4">Dados de faturação e contacto</h2>
                         <div class="row g-3">
@@ -36,16 +36,24 @@
 
                         <h2 class="h5 mt-5">Campanha</h2>
                         <div class="row g-3">
-                            <div class="col-12">
-                                <label class="form-label" for="beneficiary_id">Associação apoiada</label>
-                                <select class="form-select" name="beneficiary_id" id="beneficiary_id" required>
-                                    <option value="">Escolha uma associação</option>
-                                    @foreach($beneficiaries as $beneficiary)
-                                        <option value="{{ $beneficiary->id }}" @selected((string) old('beneficiary_id') === (string) $beneficiary->id)>{{ $beneficiary->name }}@if($beneficiary->category) — {{ $beneficiary->category->name }}@endif</option>
-                                    @endforeach
-                                </select>
-                                <div class="form-text">A associação escolhida ficará associada a esta campanha.</div>
-                            </div>
+                            @if($lockedBeneficiary)
+                                <div class="col-12">
+                                    <label class="form-label">Associação apoiada</label>
+                                    <div class="alert alert-success d-flex align-items-center gap-2 mb-0"><i class="bi bi-lock-fill"></i><div><strong>{{ $lockedBeneficiary->name }}</strong><br><small>Esta associação foi definida pela ligação através da qual chegou e não pode ser alterada.</small></div></div>
+                                    <input type="hidden" name="beneficiary_id" value="{{ $lockedBeneficiary->id }}">
+                                </div>
+                            @else
+                                <div class="col-12">
+                                    <label class="form-label" for="beneficiary_id">Associação apoiada</label>
+                                    <select class="form-select" name="beneficiary_id" id="beneficiary_id" required>
+                                        <option value="">Escolha uma associação</option>
+                                        @foreach($beneficiaries as $beneficiary)
+                                            <option value="{{ $beneficiary->id }}" @selected((string) old('beneficiary_id') === (string) $beneficiary->id)>{{ $beneficiary->name }}@if($beneficiary->category) — {{ $beneficiary->category->name }}@endif</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="form-text">A associação escolhida ficará associada a esta campanha.</div>
+                                </div>
+                            @endif
                             <div class="col-12"><label class="form-label" for="campaign_title">Nome da campanha</label><input class="form-control" id="campaign_title" name="campaign_title" value="{{ old('campaign_title') }}" required></div>
                             <div class="col-12"><label class="form-label" for="destination_url">Endereço de destino</label><input class="form-control" type="url" id="destination_url" name="destination_url" placeholder="https://" value="{{ old('destination_url') }}" required></div>
                             <div class="col-md-6">
