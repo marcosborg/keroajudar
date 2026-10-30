@@ -25,6 +25,8 @@ Route::get('advertising/order/status/{order}', [AdvertisingOrderController::clas
 Route::get('advertising/order/{position}', [AdvertisingOrderController::class, 'create'])->name('advertising.orders.create');
 Route::post('advertising/order/{position}', [AdvertisingOrderController::class, 'store'])
     ->middleware('throttle:10,1')->name('advertising.orders.store');
+Route::get('assets/associacao/{beneficiary}/banner/{format}.svg', [WebsiteController::class, 'beneficiaryBanner'])
+    ->middleware(['signed', 'throttle:120,1'])->name('website.beneficiary.banner');
 
 Route::prefix('beneficiarios')->name('beneficiaries.')->group(function () {
     Route::get('/', [\App\Http\Controllers\BeneficiaryPortalController::class, 'index'])->name('index');

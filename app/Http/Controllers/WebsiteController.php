@@ -13,6 +13,7 @@ use App\Models\RaffleGame;
 use App\Models\RaffleNumber;
 use App\Models\RaffleRule;
 use App\Services\HomeAdvertisingService;
+use App\Services\BeneficiaryBannerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -122,6 +123,23 @@ class WebsiteController extends Controller
             'utm_source' => 'association',
             'utm_medium' => 'referral',
             'utm_campaign' => 'beneficiary-'.$beneficiary->id,
+        ]);
+    }
+
+    public function beneficiaryBanner(Request $request, Beneficiary $beneficiary, string $format, BeneficiaryBannerService $banners)
+    {
+        abort_unless($beneficiary->active, 404);
+        abort_unless(isset($banners->formats()[$format]), 404);
+
+        $size = $banners->formats()[$format];
+        $disposition = $request->boolean('download') ? 'attachment' : 'inline';
+        $fileName = 'kero-ajudar-'.Str::slug($beneficiary->name).'-'.$size['width'].'x'.$size['height'].'.svg';
+
+        return response($banners->render($beneficiary, $format), 200, [
+            'Content-Type' => 'image/svg+xml; charset=UTF-8',
+            'Content-Disposition' => $disposition.'; filename="'.$fileName.'"',
+            'Cache-Control' => 'public, max-age=86400',
+            'X-Content-Type-Options' => 'nosniff',
         ]);
     }
 

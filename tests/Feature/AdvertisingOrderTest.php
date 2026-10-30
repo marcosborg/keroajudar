@@ -239,6 +239,37 @@ class AdvertisingOrderTest extends TestCase
         $this->assertNotContains('ip_address', Schema::getColumnListing('beneficiary_referral_metrics'));
     }
 
+    /** @test */
+    public function the_beneficiary_area_provides_downloadable_tracked_banner_formats(): void
+    {
+        $this->actingAs($this->beneficiary, 'beneficiary')
+            ->get(route('beneficiaries.area'))
+            ->assertOk()
+            ->assertSee('Banners prontos a instalar')
+            ->assertSee('300×250 px')
+            ->assertSee('728×90 px')
+            ->assertSee('320×100 px')
+            ->assertSee('160×600 px')
+            ->assertSee('Copiar código HTML');
+
+        $previewUrl = URL::signedRoute('website.beneficiary.banner', [
+            'beneficiary' => $this->beneficiary,
+            'format' => 'medium-rectangle',
+        ]);
+        $this->get($previewUrl)->assertOk()
+            ->assertHeader('Content-Type', 'image/svg+xml; charset=UTF-8')
+            ->assertSee('<svg', false)
+            ->assertSee($this->beneficiary->name);
+
+        $downloadUrl = URL::signedRoute('website.beneficiary.banner', [
+            'beneficiary' => $this->beneficiary,
+            'format' => 'leaderboard',
+            'download' => 1,
+        ]);
+        $this->get($downloadUrl)->assertOk()
+            ->assertHeader('Content-Disposition', 'attachment; filename="kero-ajudar-associacao-patas-felizes-728x90.svg"');
+    }
+
     private function validPayload(AdPosition $position): array
     {
         return [

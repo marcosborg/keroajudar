@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Beneficiary;
 use App\Models\BeneficiaryCategory;
+use App\Services\BeneficiaryBannerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 
 class BeneficiaryPortalController extends Controller
 {
@@ -109,15 +112,36 @@ class BeneficiaryPortalController extends Controller
         return redirect()->route('beneficiaries.login');
     }
 
-    public function area()
+    public function area(BeneficiaryBannerService $banners)
     {
         $beneficiary = Auth::guard('beneficiary')->user();
-        $shareUrl = route('website.donativo', ['beneficiary_id' => $beneficiary->id]);
+        $shareUrl = URL::signedRoute('website.beneficiary.referral', ['beneficiary' => $beneficiary]);
+        $bannerKit = collect($banners->formats())->map(function (array $size, string $format) use ($beneficiary, $shareUrl) {
+            $previewUrl = URL::signedRoute('website.beneficiary.banner', [
+                'beneficiary' => $beneficiary,
+                'format' => $format,
+            ]);
+            $downloadUrl = URL::signedRoute('website.beneficiary.banner', [
+                'beneficiary' => $beneficiary,
+                'format' => $format,
+                'download' => 1,
+            ]);
+            $alt = htmlspecialchars('Apoie '.$beneficiary->name.' através da Kero Ajudar', ENT_QUOTES, 'UTF-8');
+            $embedCode = '<a href="'.$shareUrl.'" target="_blank" rel="noopener"><img src="'.$previewUrl.'" width="'.$size['width'].'" height="'.$size['height'].'" alt="'.$alt.'"></a>';
+
+            return array_merge($size, compact('format', 'previewUrl', 'downloadUrl', 'embedCode'));
+        })->values();
+        $trackedVisits = DB::table('beneficiary_referral_metrics')->where('beneficiary_id', $beneficiary->id)->sum('visits');
+        $trackedVisits30Days = DB::table('beneficiary_referral_metrics')->where('beneficiary_id', $beneficiary->id)
+            ->where('metric_date', '>=', now()->subDays(29)->toDateString())->sum('visits');
 
         return view('website.beneficiaries.area', [
             'beneficiary' => $beneficiary,
             'shareUrl' => $shareUrl,
             'categories' => BeneficiaryCategory::orderBy('name')->get(),
+            'bannerKit' => $bannerKit,
+            'trackedVisits' => $trackedVisits,
+            'trackedVisits30Days' => $trackedVisits30Days,
         ]);
     }
 

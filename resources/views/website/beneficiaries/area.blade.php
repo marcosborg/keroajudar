@@ -38,9 +38,13 @@
                             <label class="form-label small text-uppercase text-muted">Link para partilhar</label>
                             <div class="input-group">
                                 <input type="text" class="form-control" id="shareLink" value="{{ $shareUrl }}" readonly>
-                                <button class="btn btn-outline-success" type="button" onclick="navigator.clipboard.writeText(document.getElementById('shareLink').value)">Copiar</button>
+                                <button class="btn btn-outline-success copy-beneficiary-content" type="button" data-copy-target="shareLink">Copiar</button>
                             </div>
-                            <small class="text-muted">Envie este link para que contribuam diretamente para si.</small>
+                            <small class="text-muted">Envie este link para que contribuam diretamente para si. Cada acesso é contabilizado.</small>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6"><div class="border rounded-3 p-2 text-center"><strong class="d-block h5 mb-0">{{ number_format($trackedVisits, 0, ',', '.') }}</strong><small class="text-muted">visitas totais</small></div></div>
+                            <div class="col-6"><div class="border rounded-3 p-2 text-center"><strong class="d-block h5 mb-0">{{ number_format($trackedVisits30Days, 0, ',', '.') }}</strong><small class="text-muted">últimos 30 dias</small></div></div>
                         </div>
                         <form method="POST" action="{{ route('beneficiaries.logout') }}">
                             @csrf
@@ -169,6 +173,63 @@
                 </div>
             </div>
         </div>
+
+        <div class="card shadow-sm border-0 mt-4" id="banner-kit">
+            <div class="card-body p-4 p-lg-5">
+                <p class="text-uppercase text-success fw-semibold mb-1">Kit de divulgação</p>
+                <h4 class="mb-2">Banners prontos a instalar</h4>
+                <p class="text-muted mb-4">Todos os banners apontam para o seu link rastreado. Pode descarregar o ficheiro SVG ou copiar o código HTML e colá-lo diretamente no seu website.</p>
+                <div class="row g-4">
+                    @foreach($bannerKit as $banner)
+                        <div class="col-xl-6">
+                            <article class="border rounded-4 p-3 h-100">
+                                <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+                                    <div><h5 class="mb-0">{{ $banner['label'] }}</h5><small class="text-muted">{{ $banner['width'] }}×{{ $banner['height'] }} px</small></div>
+                                    <a class="btn btn-sm btn-outline-success" href="{{ $banner['downloadUrl'] }}">Descarregar SVG</a>
+                                </div>
+                                <div class="bg-light border rounded-3 p-3 d-flex align-items-center justify-content-center overflow-auto mb-3" style="min-height:180px;max-height:380px;">
+                                    <img src="{{ $banner['previewUrl'] }}" width="{{ $banner['width'] }}" height="{{ $banner['height'] }}" alt="Pré-visualização {{ $banner['label'] }}" style="max-width:100%;height:auto;max-height:350px;">
+                                </div>
+                                <label class="form-label small text-uppercase text-muted" for="embedCode{{ $loop->index }}">Código HTML para instalar</label>
+                                <textarea class="form-control font-monospace small" id="embedCode{{ $loop->index }}" rows="4" readonly>{{ $banner['embedCode'] }}</textarea>
+                                <button class="btn btn-success btn-sm mt-2 copy-beneficiary-content" type="button" data-copy-target="embedCode{{ $loop->index }}">Copiar código HTML</button>
+                            </article>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    async function copyValue(value) {
+        try {
+            await navigator.clipboard.writeText(value);
+        } catch (error) {
+            const field = document.createElement('textarea');
+            field.value = value;
+            field.style.position = 'fixed';
+            field.style.opacity = '0';
+            document.body.appendChild(field);
+            field.select();
+            document.execCommand('copy');
+            field.remove();
+        }
+    }
+
+    document.querySelectorAll('.copy-beneficiary-content').forEach(button => {
+        const original = button.textContent;
+        button.addEventListener('click', async () => {
+            const field = document.getElementById(button.dataset.copyTarget);
+            await copyValue(field.value);
+            button.textContent = 'Copiado!';
+            window.setTimeout(() => button.textContent = original, 2200);
+        });
+    });
+})();
+</script>
+@endpush
